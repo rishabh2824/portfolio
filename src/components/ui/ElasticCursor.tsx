@@ -3,7 +3,7 @@
  */
 
 "use client";
-import React, {
+import {
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -15,7 +15,6 @@ import { cn } from "@/lib/utils";
 import { useMouse } from "@/hooks/use-mouse";
 import { usePreloader } from "../preloader";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { usePathname } from "next/navigation";
 
 // Gsap Ticker Function
 function useTicker(callback: any, paused: boolean) {
@@ -74,9 +73,6 @@ function getRekt(el: HTMLElement) {
 const CURSOR_DIAMETER = 50;
 
 function ElasticCursor() {
-  const pathname = usePathname();
-  const isBlogPost = pathname.startsWith("/blogs/") && pathname !== "/blogs";
-
   const { loadingPercent, isLoading } = usePreloader();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -101,7 +97,10 @@ function ElasticCursor() {
     set.sy = gsap.quickSetter(jellyRef.current, "scaleY");
     set.width = gsap.quickSetter(jellyRef.current, "width", "px");
     set.height = gsap.quickSetter(jellyRef.current, "height", "px");
-    set.opacity = gsap.quickSetter([jellyRef.current, dotRef.current], "opacity");
+    set.opacity = gsap.quickSetter(
+      [jellyRef.current, dotRef.current],
+      "opacity",
+    );
   }, []);
 
   // Start Animation loop
@@ -175,7 +174,7 @@ function ElasticCursor() {
 
       // Update body cursor style to ensure default cursor shows up when custom is hidden
       if (shouldHide) {
-        document.body.style.cursor = 'auto';
+        document.body.style.cursor = "auto";
       }
 
       // Mouse X and Y
@@ -213,7 +212,7 @@ function ElasticCursor() {
   }, [loadingPercent]);
 
   useTicker(loop, isLoading || !cursorMoved || isMobile);
-  if (isMobile || isBlogPost) return null;
+  if (isMobile) return null;
 
   // Return UI
   return (
@@ -224,7 +223,7 @@ function ElasticCursor() {
         className={cn(
           `w-[${CURSOR_DIAMETER}px] h-[${CURSOR_DIAMETER}px] border-2 border-black dark:border-white`,
           "jelly-blob fixed left-0 top-0 rounded-lg z-[999] pointer-events-none will-change-transform",
-          "translate-x-[-50%] translate-y-[-50%]"
+          "translate-x-[-50%] translate-y-[-50%]",
         )}
         style={{
           zIndex: 100,

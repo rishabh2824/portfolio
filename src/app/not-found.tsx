@@ -1,6 +1,6 @@
 import Spline from "@splinetool/react-spline";
 import type { Metadata } from "next";
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "404 - Page Not Found",

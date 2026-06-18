@@ -32,54 +32,6 @@ export const FloatingDock = ({
   );
 };
 
-const FloatingDockMobile = ({
-  items,
-  className,
-}: {
-  items: { title: string; icon: React.ReactNode }[];
-  className?: string;
-}) => {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className={cn("relative block md:hidden", className)}>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            layoutId="nav"
-            className="absolute bottom-full mb-2 inset-x-0 flex flex-col gap-2"
-          >
-            {items.map((item, idx) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                exit={{
-                  opacity: 0,
-                  y: 10,
-                  transition: {
-                    delay: idx * 0.05,
-                  },
-                }}
-                transition={{ delay: (items.length - 1 - idx) * 0.05 }}
-              >
-                <div
-                  key={item.title}
-                  className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center"
-                >
-                  <div className="h-4 w-4">{item.icon}</div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
-
 const FloatingDockDesktop = ({
   items,
   className,
@@ -124,7 +76,7 @@ const FloatingDockDesktop = ({
         className={cn(
           "flex gap-2 md:gap-4",
           "mx-auto h-16 items-end  rounded-2xl bg-white/30 dark:bg-black/50  px-4 pb-3",
-          className
+          className,
         )}
       >
         {items.map((item) => (
@@ -136,13 +88,11 @@ const FloatingDockDesktop = ({
           className="z-10 absolute t-0 w-full h-full pointer-events-none"
           onMouseEnter={() => setShowHint(false)}
         >
-          <div
-            className="relative w-full h-full flex items-center justify-center"
-          >
+          <div className="relative w-full h-full flex items-center justify-center">
             <motion.div
               className={cn(
                 "w-5 h-5 border-2 left-[50%] top-0 border-foreground rounded-full",
-                "translate-x-[-50px]"
+                "translate-x-[-50px]",
               )}
               initial={{ opacity: 0, x: -50 }}
               animate={controls}
@@ -178,7 +128,7 @@ function IconContainer({
   let heightTransformIcon = useTransform(
     distance,
     [-150, 0, 150],
-    [20, 40, 20]
+    [20, 40, 20],
   );
 
   let width = useSpring(widthTransform, {

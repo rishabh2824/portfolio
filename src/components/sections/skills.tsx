@@ -38,7 +38,7 @@ const SkillsSection = () => {
               key={skill.name}
               style={{ "--skill": skill.color } as CSSProperties}
               className={cn(
-                // the section sits inside `.canvas-overlay-mode` (pointer-events
+                // the section sits inside a pointer-events gated home page (pointer-events
                 // disabled so the 3D canvas can be clicked through); re-enable on
                 // the whole card so hover isn't limited to the icon/label.
                 "pointer-events-auto",
@@ -46,7 +46,7 @@ const SkillsSection = () => {
                 "border border-border/60 bg-secondary/20 backdrop-blur-sm",
                 "transition-[transform,border-color,background-color,box-shadow] duration-300",
                 "hover:-translate-y-1 hover:border-[var(--skill)] hover:bg-secondary/40",
-                "hover:shadow-[0_10px_40px_-12px_var(--skill)]"
+                "hover:shadow-[0_10px_40px_-12px_var(--skill)]",
               )}
             >
               {/* per-skill colored glow */}
@@ -79,7 +79,11 @@ const SkillsSection = () => {
       id="skills"
       className="w-full h-screen md:h-[150dvh] pointer-events-none"
     >
-      <SectionHeader id="skills" title="Tech Stack" desc="(hint: press a key)" />
+      <SectionHeader
+        id="skills"
+        title="Tech Stack"
+        desc="(hint: press a key)"
+      />
     </SectionWrapper>
   );
 };

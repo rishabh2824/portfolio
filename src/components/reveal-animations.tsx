@@ -35,7 +35,7 @@ export const BlurIn = ({
       transition={{ duration, delay }}
       variants={combinedVariants}
       className={cn(
-        className
+        className,
         // "font-display text-center text-4xl font-bold tracking-[-0.02em] drop-shadow-sm md:text-7xl md:leading-[5rem]"
       )}
     >
@@ -123,7 +123,7 @@ interface RevealAnimationProps {
   className?: string;
 }
 
-export default function RevealAnimation({
+function RevealAnimation({
   children,
   delay = 0,
   duration = 0.5,

@@ -1,5 +1,4 @@
 "use client";
-import styles from "./style.module.scss";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { opacity, slideUp } from "./anim";
@@ -19,7 +18,7 @@ const steps = [
 ];
 
 export default function Index() {
-  const { isLoading, loadingPercent } = usePreloader();
+  const { loadingPercent } = usePreloader();
   const [index, setIndex] = useState(0);
   const [dimension, setDimension] = useState({ width: 0, height: 0 });
 
@@ -33,15 +32,18 @@ export default function Index() {
       () => {
         setIndex(index + 1);
       },
-      index == 0 ? 1000 : 150
+      index == 0 ? 1000 : 150,
     );
   }, [index]);
 
-  const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height
-    } Q${dimension.width / 2} ${dimension.height + 300} 0 ${dimension.height
-    }  L0 0`;
-  const targetPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height
-    } Q${dimension.width / 2} ${dimension.height} 0 ${dimension.height}  L0 0`;
+  const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${
+    dimension.height
+  } Q${dimension.width / 2} ${dimension.height + 300} 0 ${
+    dimension.height
+  }  L0 0`;
+  const targetPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${
+    dimension.height
+  } Q${dimension.width / 2} ${dimension.height} 0 ${dimension.height}  L0 0`;
 
   const curve = {
     initial: {
@@ -50,7 +52,11 @@ export default function Index() {
     },
     exit: {
       d: targetPath,
-      transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1] as const, delay: 0.3 },
+      transition: {
+        duration: 0.7,
+        ease: [0.76, 0, 0.24, 1] as const,
+        delay: 0.3,
+      },
     },
   };
 
@@ -59,15 +65,21 @@ export default function Index() {
       variants={slideUp}
       initial="initial"
       exit="exit"
-      className={styles.introduction}
+      className="fixed z-[99] flex h-dvh w-dvw items-end justify-end bg-background px-[60px] pb-[30px]"
     >
       {dimension.width > 0 && (
         <>
-          <motion.p variants={opacity} initial="initial" animate="enter">
+          <motion.p
+            className="absolute z-[1] flex items-center text-[72px] text-foreground"
+            variants={opacity}
+            initial="initial"
+            animate="enter"
+          >
             {(loadingPercent - (loadingPercent % 5)).toFixed(0)} %
           </motion.p>
-          <svg>
+          <svg className="absolute top-0 h-[calc(100%+300px)] w-full">
             <motion.path
+              className="fill-background"
               variants={curve}
               initial="initial"
               exit="exit"

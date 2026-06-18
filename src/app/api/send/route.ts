@@ -1,9 +1,5 @@
-import { EmailTemplate } from "@/components/email-template";
 import { config } from "@/data/config";
-import { Resend } from "resend";
 import { z } from "zod";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_MAX = 3;
@@ -25,11 +21,48 @@ const Email = z.object({
   email: z.string().email({ message: "Email is invalid!" }),
   message: z.string().min(10, "Message is too short!"),
 });
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => {
+    switch (character) {
+      case "&":
+        return "&amp;";
+      case "<":
+        return "&lt;";
+      case ">":
+        return "&gt;";
+      case '"':
+        return "&quot;";
+      case "'":
+        return "&#39;";
+      default:
+        return character;
+    }
+  });
+}
+
+function renderContactEmail({
+  fullName,
+  email,
+  message,
+}: z.infer<typeof Email>): string {
+  return `
+    <div>
+      <h1>from: ${escapeHtml(fullName)}!</h1>
+      <div>${escapeHtml(email)} sent you a message</div>
+      <blockquote>${escapeHtml(message)}</blockquote>
+    </div>
+  `;
+}
+
 export async function POST(req: Request) {
   try {
     const ip = req.headers.get("x-forwarded-for") ?? "unknown";
     if (isRateLimited(ip)) {
-      return Response.json({ error: "Too many requests. Please try again later." }, { status: 429 });
+      return Response.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429 },
+      );
     }
 
     const body = await req.json();
@@ -41,23 +74,36 @@ export async function POST(req: Request) {
     if (!zodSuccess)
       return Response.json({ error: zodError?.message }, { status: 400 });
 
-    const { data: resendData, error: resendError } = await resend.emails.send({
-      from: "Porfolio <onboarding@resend.dev>",
-      to: [config.email],
-      subject: "Contact me from portfolio",
-      react: EmailTemplate({
-        fullName: zodData.fullName,
-        email: zodData.email,
-        message: zodData.message,
-      }) as React.ReactElement,
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      return Response.json(
+        { error: "Email service is not configured" },
+        { status: 500 },
+      );
+    }
+
+    const resendResponse = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "Portfolio <onboarding@resend.dev>",
+        to: [config.email],
+        subject: "Contact me from portfolio",
+        html: renderContactEmail(zodData),
+      }),
     });
 
-    if (resendError) {
+    const resendData = await resendResponse.json();
+
+    if (!resendResponse.ok) {
       return Response.json({ error: "Failed to send email" }, { status: 500 });
     }
 
     return Response.json(resendData);
-  } catch (error) {
-    return Response.json({ error }, { status: 500 });
+  } catch {
+    return Response.json({ error: "Failed to send email" }, { status: 500 });
   }
 }

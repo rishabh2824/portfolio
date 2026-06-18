@@ -4,21 +4,15 @@ import * as React from "react";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
@@ -88,52 +82,13 @@ function ResponsiveDialogContent({
 
   return (
     <DrawerContent className={className}>
-      <ScrollArea className="max-h-[85vh] px-4 pb-4 overflow-y-auto!" data-lenis-prevent>{children}</ScrollArea>
+      <ScrollArea
+        className="max-h-[85vh] px-4 pb-4 overflow-y-auto!"
+        data-lenis-prevent
+      >
+        {children}
+      </ScrollArea>
     </DrawerContent>
-  );
-}
-
-function ResponsiveDialogHeader({
-  children,
-  className,
-  ...props
-}: React.ComponentProps<typeof DialogHeader>) {
-  const isDesktop = React.useContext(ResponsiveDialogContext);
-
-  if (isDesktop) {
-    return (
-      <DialogHeader className={className} {...props}>
-        {children}
-      </DialogHeader>
-    );
-  }
-
-  return (
-    <DrawerHeader className={className} {...props}>
-      {children}
-    </DrawerHeader>
-  );
-}
-
-function ResponsiveDialogFooter({
-  children,
-  className,
-  ...props
-}: React.ComponentProps<typeof DialogFooter>) {
-  const isDesktop = React.useContext(ResponsiveDialogContext);
-
-  if (isDesktop) {
-    return (
-      <DialogFooter className={className} {...props}>
-        {children}
-      </DialogFooter>
-    );
-  }
-
-  return (
-    <DrawerFooter className={className} {...props}>
-      {children}
-    </DrawerFooter>
   );
 }
 
@@ -181,26 +136,10 @@ function ResponsiveDialogDescription({
   );
 }
 
-function ResponsiveDialogClose({
-  children,
-  ...props
-}: React.ComponentProps<typeof DialogClose>) {
-  const isDesktop = React.useContext(ResponsiveDialogContext);
-
-  if (isDesktop) {
-    return <DialogClose {...props}>{children}</DialogClose>;
-  }
-
-  return <DrawerClose {...props}>{children}</DrawerClose>;
-}
-
 export {
   ResponsiveDialog,
   ResponsiveDialogTrigger,
   ResponsiveDialogContent,
-  ResponsiveDialogHeader,
-  ResponsiveDialogFooter,
   ResponsiveDialogTitle,
   ResponsiveDialogDescription,
-  ResponsiveDialogClose,
 };

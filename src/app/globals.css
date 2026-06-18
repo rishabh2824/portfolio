@@ -1,9 +1,52 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-body {
-  scroll-behavior: smooth;
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-brand: var(--brand);
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --font-sans: var(--font-inter), sans-serif;
+  --font-display: var(--font-archivo-black), sans-serif;
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+@utility container {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 2rem;
+
+  @media (width >= 1400px) {
+    max-width: 1400px;
+  }
 }
 
 @layer base {
@@ -61,70 +104,5 @@ body {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-/* canvas-confetti injects a canvas with inline z-index */
-body > canvas {
-  pointer-events: none !important;
-}
-
-@layer utilities {
-  .canvas-overlay-mode {
-    pointer-events: none;
-  }
-
-  .canvas-overlay-mode a,
-  .canvas-overlay-mode button,
-  .canvas-overlay-mode input,
-  .canvas-overlay-mode label,
-  .canvas-overlay-mode select,
-  .canvas-overlay-mode textarea,
-  .canvas-overlay-mode [role="button"],
-  .canvas-overlay-mode p,
-  .canvas-overlay-mode h1,
-  .canvas-overlay-mode h2,
-  .canvas-overlay-mode h3,
-  .canvas-overlay-mode h4,
-  .canvas-overlay-mode h5,
-  .canvas-overlay-mode h6,
-  .canvas-overlay-mode span,
-  .canvas-overlay-mode svg {
-    pointer-events: auto;
-  }
-}
-
-/* Radix ScrollArea wraps its children in a `display: table; min-width: 100%`
-   element that shrink-wraps to its widest child. A nowrap node (e.g. a quoted
-   reply with `truncate`) makes that table grow past the viewport, so every
-   `min-w-0`/`truncate`/`break-words` below it measures against the inflated
-   width and never wraps. Forcing the wrapper to `block` pins the message
-   column to the viewport width so truncation/wrapping can take effect. */
-.chat-scroll-area [data-radix-scroll-area-viewport] > div {
-  display: block !important;
-}
-
-/* Accessibility + low-end escape hatch: when the OS requests reduced motion,
-   neutralize CSS animations/transitions globally. The heavy JS/WebGL effects
-   (Spline scene, particle canvas, elastic cursor) are gated separately in
-   use-perf-profile.ts; this covers the long tail of decorative CSS motion. */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
   }
 }

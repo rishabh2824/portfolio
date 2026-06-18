@@ -4,8 +4,6 @@ import "./globals.css";
 import { config } from "@/data/config";
 
 import Header from "@/components/header/header";
-import Footer from "@/components/footer/footer";
-import Script from "next/script";
 import AppOverlays from "@/components/app-overlays";
 import { Providers } from "@/components/providers";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -13,27 +11,16 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 export const metadata: Metadata = {
   title: config.title,
   description: config.description.long,
-  keywords: config.keywords,
   authors: [{ name: config.author }],
   openGraph: {
     title: config.title,
     description: config.description.short,
-    url: config.site,
-    images: [
-      {
-        url: config.ogImg,
-        width: 800,
-        height: 600,
-        alt: "Portfolio preview",
-      },
-    ],
     type: "website",
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: config.title,
     description: config.description.short,
-    images: [config.ogImg],
   },
   robots: {
     index: true,
@@ -43,13 +30,13 @@ export const metadata: Metadata = {
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-inter",
 });
 
 const archivoBlack = Archivo_Black({
   subsets: ["latin"],
   weight: "400",
-  variable: "--font-display",
+  variable: "--font-archivo-black",
 });
 
 export default function RootLayout({
@@ -58,22 +45,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={[inter.variable, archivoBlack.variable, "font-display"].join(" ")} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={[inter.variable, archivoBlack.variable, "font-display"].join(
+        " ",
+      )}
+      suppressHydrationWarning
+    >
       <head>
         {/* The Spline runtime lazy-loads its wasm from unpkg; warm the
             connection early so the 3D scene starts faster. */}
-        <link rel="preconnect" href="https://unpkg.com" crossOrigin="anonymous" />
-        <Script
-          defer
-          src={process.env.UMAMI_DOMAIN}
-          data-website-id={process.env.UMAMI_SITE_ID}
-        ></Script>
+        <link
+          rel="preconnect"
+          href="https://unpkg.com"
+          crossOrigin="anonymous"
+        />
       </head>
-      <body>
+      <body className="scroll-smooth bg-background text-foreground [&_*]:border-border">
         <Providers>
           <Header />
           {children}
-          <Footer />
           <AppOverlays />
         </Providers>
         {process.env.NEXT_PUBLIC_GA_ID && (

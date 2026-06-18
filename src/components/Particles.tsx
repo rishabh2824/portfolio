@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useMousePosition } from "@/utils/mouse";
 import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
 
 interface ParticlesProps {
   className?: string;
@@ -36,9 +35,6 @@ export default function Particles({
   refresh = false,
   maxDpr = 2,
 }: ParticlesProps) {
-  const pathname = usePathname();
-  const isBlogPost = pathname.startsWith("/blogs/") && pathname !== "/blogs";
-
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const context = useRef<CanvasRenderingContext2D | null>(null);
@@ -49,10 +45,11 @@ export default function Particles({
   const rafId = useRef<number>(0);
   // Cap the device-pixel-ratio: a 3x screen otherwise triples the fill cost.
   const dpr =
-    typeof window !== "undefined" ? Math.min(window.devicePixelRatio, maxDpr) : 1;
+    typeof window !== "undefined"
+      ? Math.min(window.devicePixelRatio, maxDpr)
+      : 1;
 
   useEffect(() => {
-    if (isBlogPost) return;
     if (canvasRef.current) {
       context.current = canvasRef.current.getContext("2d");
     }
@@ -77,7 +74,7 @@ export default function Particles({
       window.removeEventListener("resize", initCanvas);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [isBlogPost]);
+  }, []);
 
   useEffect(() => {
     onMouseMove();
@@ -166,7 +163,7 @@ export default function Particles({
         0,
         0,
         canvasSize.current.w,
-        canvasSize.current.h
+        canvasSize.current.h,
       );
     }
   };
@@ -185,7 +182,7 @@ export default function Particles({
     start1: number,
     end1: number,
     start2: number,
-    end2: number
+    end2: number,
   ): number => {
     const remapped =
       ((value - start1) * (end2 - start2)) / (end1 - start1) + start2;
@@ -204,7 +201,7 @@ export default function Particles({
       ];
       const closestEdge = edge.reduce((a, b) => Math.min(a, b));
       const remapClosestEdge = parseFloat(
-        remapValue(closestEdge, 0, 20, 0, 1).toFixed(2)
+        remapValue(closestEdge, 0, 20, 0, 1).toFixed(2),
       );
       if (remapClosestEdge > 1) {
         circle.alpha += 0.02;
@@ -245,20 +242,18 @@ export default function Particles({
             translateY: circle.translateY,
             alpha: circle.alpha,
           },
-          true
+          true,
         );
       }
     });
     rafId.current = window.requestAnimationFrame(animate);
   };
 
-  if (isBlogPost) return null;
-
   return (
     <div
       className={cn(
         className,
-        "dark:bg-gradient-to-tl from-black via-zinc-600/20 to-black"
+        "dark:bg-gradient-to-tl from-black via-zinc-600/20 to-black",
       )}
       ref={canvasContainerRef}
       aria-hidden="true"

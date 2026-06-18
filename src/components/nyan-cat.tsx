@@ -1,12 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
-import {
-  AnimatePresence,
-  motion,
-  animate,
-  useAnimationControls,
-} from "motion/react";
+import { AnimatePresence, motion, useAnimationControls } from "motion/react";
 
 const getRandomHeight = () => {
   return `${Math.random() * 100}vh`;

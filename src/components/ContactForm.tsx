@@ -68,12 +68,12 @@ const ContactForm = () => {
         router.push("/");
         clearTimeout(timer);
       }, 1000);
-    } catch (err) {
+    } catch {
       toast({
         title: "Error",
         description: "Something went wrong! Please try again.",
         className: cn(
-          "top-0 w-full flex justify-center fixed md:max-w-7xl md:top-4 md:right-4"
+          "top-0 w-full flex justify-center fixed md:max-w-7xl md:top-4 md:right-4",
         ),
         variant: "destructive",
       });
@@ -81,7 +81,11 @@ const ContactForm = () => {
     setLoading(false);
   };
   return (
-    <form className="min-w-7xl mx-auto sm:mt-4" onSubmit={handleSubmit} aria-busy={loading}>
+    <form
+      className="min-w-7xl mx-auto sm:mt-4"
+      onSubmit={handleSubmit}
+      aria-busy={loading}
+    >
       <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
         <LabelInputContainer>
           <Label htmlFor="fullname">Full name</Label>
@@ -90,9 +94,14 @@ const ContactForm = () => {
             placeholder="Your Name"
             type="text"
             value={fullName}
-            onChange={(e) => { setFullName(e.target.value); setErrors((p) => ({ ...p, fullName: undefined })); }}
+            onChange={(e) => {
+              setFullName(e.target.value);
+              setErrors((p) => ({ ...p, fullName: undefined }));
+            }}
           />
-          {errors.fullName && <p className="text-sm text-red-500">{errors.fullName}</p>}
+          {errors.fullName && (
+            <p className="text-sm text-red-500">{errors.fullName}</p>
+          )}
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
@@ -101,9 +110,14 @@ const ContactForm = () => {
             placeholder="you@example.com"
             type="email"
             value={email}
-            onChange={(e) => { setEmail(e.target.value); setErrors((p) => ({ ...p, email: undefined })); }}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setErrors((p) => ({ ...p, email: undefined }));
+            }}
           />
-          {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+          {errors.email && (
+            <p className="text-sm text-red-500">{errors.email}</p>
+          )}
         </LabelInputContainer>
       </div>
       <div className="grid w-full gap-1.5 mb-4">
@@ -112,9 +126,14 @@ const ContactForm = () => {
           placeholder="Tell me about about your project,"
           id="content"
           value={message}
-          onChange={(e) => { setMessage(e.target.value); setErrors((p) => ({ ...p, message: undefined })); }}
+          onChange={(e) => {
+            setMessage(e.target.value);
+            setErrors((p) => ({ ...p, message: undefined }));
+          }}
         />
-        {errors.message && <p className="text-sm text-red-500">{errors.message}</p>}
+        {errors.message && (
+          <p className="text-sm text-red-500">{errors.message}</p>
+        )}
         <p className="text-sm text-muted-foreground">
           I&apos;ll never share your data with anyone else. Pinky promise!
         </p>

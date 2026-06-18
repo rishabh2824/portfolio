@@ -34,10 +34,10 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
-export interface ButtonProps
+interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
@@ -46,15 +46,19 @@ export interface ButtonProps
 
 const addClassNameRecursively = (
   children: ReactNode,
-  className: string
+  className: string,
 ): ReactNode => {
   const foo = (child: ReactNode) => {
     if (!isValidElement(child)) return child;
 
     const childProps = child.props as Record<string, unknown>;
     return cloneElement(child, {
-      className: `${(childProps.className as string) || ""} ${className}`.trim(),
-      children: addClassNameRecursively(childProps.children as ReactNode, className),
+      className:
+        `${(childProps.className as string) || ""} ${className}`.trim(),
+      children: addClassNameRecursively(
+        childProps.children as ReactNode,
+        className,
+      ),
     } as Record<string, unknown>);
   };
   return Children.map(children, foo);
@@ -67,7 +71,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <Comp
         className={cn(
           buttonVariants({ variant, size, className }),
-          "cursor-can-hover"
+          "cursor-can-hover",
         )}
         ref={ref}
         {...props}
@@ -76,8 +80,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {addClassNameRecursively(children, "pointer-events-none")}
       </Comp>
     );
-  }
+  },
 );
 Button.displayName = "Button";
 
-export { Button, buttonVariants };
+export { Button };

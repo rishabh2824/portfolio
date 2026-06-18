@@ -1,14 +1,12 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { Download, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ResumeDoodle from "./resume-doodle";
 
-// Drop the compiled PDF here: frontend/public/Naresh_Khatri_Resume.pdf
-const RESUME_PATH = "/Naresh_Khatri_Resume.pdf";
+// Drop the compiled PDF here: public/Resume.pdf
+const RESUME_PATH = "/Resume.pdf";
 
 export default function ResumeView() {
   return (
@@ -49,18 +47,20 @@ export default function ResumeView() {
         </motion.div>
       </div>
 
-      {/* PDF viewer — centered on mobile (short A4 card), top-aligned on desktop (tall) */}
-      <div className="mx-auto flex w-full max-w-4xl flex-1 items-center justify-center px-2 pb-6 md:items-start md:px-4 md:pb-24">
-        {/* opacity-only animation: a transformed ancestor would trap the fixed doodle FAB */}
+      {/* PDF viewer — the card's aspect ratio matches the PDF page size
+          (US Letter, 612×792), so the fit-to-width render fills it exactly with
+          no dark gap, and the whole page scrolls naturally with the window. */}
+      <div className="mx-auto w-full max-w-4xl px-2 pb-6 md:px-4 md:pb-12">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="aspect-[210/297] w-full overflow-hidden rounded-2xl bg-white shadow-xl"
+          className="aspect-[612/792] w-full overflow-hidden rounded-2xl bg-white shadow-xl"
         >
-          <ResumeDoodle
+          <iframe
             src={`${RESUME_PATH}#toolbar=0&navpanes=0&view=FitH`}
-            title="Naresh Khatri — Résumé"
+            title="Rishabh-Resume"
+            className="block h-full w-full bg-white"
           />
         </motion.div>
       </div>
