@@ -71,7 +71,7 @@ const SlideShow = ({ images }: { images: string[] }) => {
             {images.map((image, idx) => (
               <div key={`${image}-${idx}`} className="min-w-0 flex-[0_0_100%]">
                 <motion.button
-                  className="relative block w-full cursor-zoom-in"
+                  className="relative block aspect-video w-full cursor-zoom-in overflow-hidden rounded-lg bg-muted/30"
                   onClick={() => {
                     setSelectedImage(image);
                   }}
@@ -82,9 +82,9 @@ const SlideShow = ({ images }: { images: string[] }) => {
                   <Image
                     src={image}
                     alt="screenshot"
-                    width={1000}
-                    height={1000}
-                    className="h-auto w-full rounded-lg"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 800px"
+                    className="object-contain"
                   />
                   <motion.div
                     className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/40 text-sm text-white/90 backdrop-blur-[2px]"

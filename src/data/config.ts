@@ -7,7 +7,6 @@ const config = {
   },
   author: "Rishabh Jain",
   role: "An Aspiring Software Developer",
-  email: "rishabh2824@gmail.com",
   social: {
     linkedin: "https://www.linkedin.com/in/rishabhjain2824/",
     github: "https://github.com/rishabh2824",

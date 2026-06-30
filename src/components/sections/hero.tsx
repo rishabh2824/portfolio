@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
-import { BriefcaseBusiness, Code2, File } from "lucide-react";
+import { File } from "lucide-react";
 import Link from "next/link";
+import { FaGithub, FaLinkedinIn } from "react-icons/fa6";
 import { Button } from "../ui/button";
 import { usePreloader } from "../preloader";
 import { BlurIn, BoxReveal } from "../reveal-animations";
@@ -77,22 +78,14 @@ const HeroSection = () => {
                 </Link>
                 <div className="md:self-start flex gap-3">
                   <div className="flex items-center h-full gap-2">
-                    <Link
-                      href={config.social.github}
-                      target="_blank"
-                      className="cursor-can-hover"
-                    >
+                    <Link href={config.social.github} target="_blank">
                       <Button variant={"outline"}>
-                        <Code2 size={24} />
+                        <FaGithub size={24} aria-hidden="true" />
                       </Button>
                     </Link>
-                    <Link
-                      href={config.social.linkedin}
-                      target="_blank"
-                      className="cursor-can-hover"
-                    >
+                    <Link href={config.social.linkedin} target="_blank">
                       <Button variant={"outline"}>
-                        <BriefcaseBusiness size={24} />
+                        <FaLinkedinIn size={24} aria-hidden="true" />
                       </Button>
                     </Link>
                   </div>

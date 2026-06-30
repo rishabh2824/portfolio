@@ -106,3 +106,16 @@
     --chart-5: 340 75% 55%;
   }
 }
+
+/* Slow, always-on Ken Burns pan/zoom for the project bento tiles. */
+@keyframes kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.12) translate(-2%, -2%);
+  }
+}
+.animate-kenburns {
+  animation: kenburns 18s ease-in-out infinite alternate;
+}

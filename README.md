@@ -1,6 +1,6 @@
 # 3D Portfolio
 
-A developer portfolio built with Next.js, React, TypeScript, Tailwind CSS, GSAP, Motion, and Spline. It includes an interactive 3D keyboard, smooth scroll-driven animations, theme switching, project details, a resume page, and a Resend-powered contact form.
+A developer portfolio built with Next.js, React, TypeScript, Tailwind CSS, GSAP, Motion, and Spline. It includes an interactive 3D keyboard, smooth scroll-driven animations, theme switching, project details, and a resume page.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Naresh-Khatri/3d-portfolio)
 
@@ -15,7 +15,6 @@ A developer portfolio built with Next.js, React, TypeScript, Tailwind CSS, GSAP,
 - Responsive layout
 - Project detail dialogs
 - Resume page
-- Contact form with Resend email delivery
 
 ## Tech Stack
 
@@ -25,8 +24,7 @@ A developer portfolio built with Next.js, React, TypeScript, Tailwind CSS, GSAP,
 | Styling | Tailwind CSS, Shadcn UI, Aceternity UI |
 | Animation | GSAP, Motion |
 | 3D | Spline Runtime |
-| Email | Resend |
-| Misc | Lenis, Zod, next-themes |
+| Misc | Lenis, next-themes |
 
 ## Getting Started
 
@@ -50,25 +48,13 @@ A developer portfolio built with Next.js, React, TypeScript, Tailwind CSS, GSAP,
    pnpm install
    ```
 
-3. Set up environment variables:
-
-   Copy `.env.example` to `.env.local` and fill in the values:
-
-   ```bash
-   cp .env.example .env.local
-   ```
-
-   | Variable | Required | Description |
-   |---|---|---|
-   | `RESEND_API_KEY` | Yes | API key from [Resend](https://resend.com) for the contact form |
-
-4. Run the development server:
+3. Run the development server:
 
    ```bash
    pnpm dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000).
+4. Open [http://localhost:3000](http://localhost:3000).
 
 ## Customization
 
@@ -83,7 +69,6 @@ const config = {
   },
   keywords: ["your", "keywords"],
   author: "Your Name",
-  email: "you@example.com",
   site: "https://yoursite.com",
   githubUsername: "your-github-username",
   githubRepo: "your-repo-name",
@@ -133,8 +118,7 @@ This site is ready for Vercel deployment:
 
 1. Push your code to GitHub.
 2. Connect the repository to [Vercel](https://vercel.com).
-3. Add `RESEND_API_KEY` in the Vercel dashboard.
-4. Deploy.
+3. Deploy.
 
 ## License
 

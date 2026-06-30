@@ -150,16 +150,46 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
         onEnter: () => {
           setActiveSection(targetSection);
           const state = getKeyboardState({ section: targetSection, isMobile });
-          gsap.to(kbd.scale, { ...state.scale, duration: 1 });
-          gsap.to(kbd.position, { ...state.position, duration: 1 });
-          gsap.to(kbd.rotation, { ...state.rotation, duration: 1 });
+          gsap.to(kbd.scale, {
+            ...state.scale,
+            duration: 1,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+          gsap.to(kbd.position, {
+            ...state.position,
+            duration: 1,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+          gsap.to(kbd.rotation, {
+            ...state.rotation,
+            duration: 1,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
         },
         onLeaveBack: () => {
           setActiveSection(prevSection);
           const state = getKeyboardState({ section: prevSection, isMobile });
-          gsap.to(kbd.scale, { ...state.scale, duration: 1 });
-          gsap.to(kbd.position, { ...state.position, duration: 1 });
-          gsap.to(kbd.rotation, { ...state.rotation, duration: 1 });
+          gsap.to(kbd.scale, {
+            ...state.scale,
+            duration: 1,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+          gsap.to(kbd.position, {
+            ...state.position,
+            duration: 1,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+          gsap.to(kbd.rotation, {
+            ...state.rotation,
+            duration: 1,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
         },
       },
     });
@@ -180,7 +210,6 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
       createSectionTimeline("#skills", "skills", "hero"),
       createSectionTimeline("#experience", "experience", "skills", "top 70%"),
       createSectionTimeline("#projects", "projects", "experience", "top 70%"),
-      createSectionTimeline("#contact", "contact", "projects", "top 30%"),
     ].filter(Boolean) as gsap.core.Timeline[];
   };
 
@@ -221,7 +250,10 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
     if (!splineApp) return { start: () => {}, stop: () => {} };
 
     let tweens: gsap.core.Tween[] = [];
-    const removePrevTweens = () => tweens.forEach((t) => t.kill());
+    const removePrevTweens = () => {
+      tweens.forEach((t) => t.kill());
+      tweens = [];
+    };
 
     const start = () => {
       removePrevTweens();
@@ -238,6 +270,7 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
             yoyo: true,
             yoyoEase: "none",
             ease: "elastic.out(1,0.3)",
+            overwrite: "auto",
           });
           tweens.push(t);
         });
@@ -250,13 +283,12 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
         if (!keycap) return;
         const t = gsap.to(keycap.position, {
           y: 0,
-          duration: 4,
-          repeat: 1,
+          duration: 1.4,
           ease: "elastic.out(1,0.7)",
+          overwrite: "auto",
         });
         tweens.push(t);
       });
-      setTimeout(removePrevTweens, 1000);
     };
 
     return { start, stop };
@@ -397,7 +429,8 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
     if (!splineApp) return;
 
     let rotateKeyboard: gsap.core.Tween | undefined;
-    let teardownKeyboard: gsap.core.Tween | undefined;
+    let experienceKeyboardLoop: gsap.core.Tween | undefined;
+    let cancelled = false;
 
     const kbd = splineApp.findObjectByName("keyboard");
 
@@ -410,24 +443,26 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
         yoyoEase: true,
         ease: "back.inOut",
         delay: 2.5,
+        overwrite: "auto",
         paused: true, // Start paused
       });
 
-      teardownKeyboard = gsap.fromTo(
-        kbd.rotation,
-        { y: 0, x: -Math.PI, z: 0 },
-        {
-          y: -Math.PI / 2,
-          duration: 5,
-          repeat: -1,
-          yoyo: true,
-          yoyoEase: true,
-          delay: 2.5,
-          immediateRender: false,
-          paused: true,
-        },
-      );
     }
+
+    const startExperienceKeyboardLoop = () => {
+      if (!kbd) return;
+      experienceKeyboardLoop?.kill();
+      experienceKeyboardLoop = gsap.to(kbd.rotation, {
+        x: kbd.rotation.x - Math.PI / 18,
+        y: kbd.rotation.y - Math.PI / 8,
+        duration: 5,
+        repeat: -1,
+        yoyo: true,
+        yoyoEase: true,
+        ease: "sine.inOut",
+        overwrite: "auto",
+      });
+    };
 
     const manageAnimations = async () => {
       // Reset text if not in skills
@@ -438,31 +473,35 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
       // Handle Rotate/Teardown Tweens
       if (activeSection === "hero") {
         rotateKeyboard?.restart();
-        teardownKeyboard?.pause();
-      } else if (activeSection === "contact") {
+        experienceKeyboardLoop?.pause();
+      } else if (activeSection === "experience") {
         rotateKeyboard?.pause();
       } else {
         rotateKeyboard?.pause();
-        teardownKeyboard?.pause();
+        experienceKeyboardLoop?.pause();
       }
 
       // Handle Bongo Cat
       if (activeSection === "projects") {
         await sleep(300);
+        if (cancelled) return;
         bongoAnimationRef.current?.start();
       } else {
         await sleep(200);
+        if (cancelled) return;
         bongoAnimationRef.current?.stop();
       }
 
-      // Handle Contact Section Animations
-      if (activeSection === "contact") {
-        await sleep(600);
-        teardownKeyboard?.restart();
+      // Handle Experience Section keycap pop animation
+      if (activeSection === "experience") {
+        await sleep(1100);
+        if (cancelled) return;
+        startExperienceKeyboardLoop();
         keycapAnimationsRef.current?.start();
       } else {
         await sleep(600);
-        teardownKeyboard?.pause();
+        if (cancelled) return;
+        experienceKeyboardLoop?.pause();
         keycapAnimationsRef.current?.stop();
       }
     };
@@ -470,8 +509,9 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
     manageAnimations();
 
     return () => {
+      cancelled = true;
       rotateKeyboard?.kill();
-      teardownKeyboard?.kill();
+      experienceKeyboardLoop?.kill();
     };
   }, [activeSection, splineApp]);
 
