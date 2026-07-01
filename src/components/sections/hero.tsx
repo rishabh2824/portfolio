@@ -1,4 +1,6 @@
-import { cn } from "@/lib/utils";
+"use client";
+
+import { cn } from "@/utils/utils";
 import { File } from "lucide-react";
 import Link from "next/link";
 import { FaGithub, FaLinkedinIn } from "react-icons/fa6";

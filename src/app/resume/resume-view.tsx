@@ -11,7 +11,6 @@ const RESUME_PATH = "/Resume.pdf";
 export default function ResumeView() {
   return (
     <div className="flex min-h-screen flex-col font-sans">
-      {/* Hide the global nav on mobile, only while this page is mounted */}
       <style
         dangerouslySetInnerHTML={{
           __html:
@@ -46,10 +45,6 @@ export default function ResumeView() {
           </Button>
         </motion.div>
       </div>
-
-      {/* PDF viewer — the card's aspect ratio matches the PDF page size
-          (US Letter, 612×792), so the fit-to-width render fills it exactly with
-          no dark gap, and the whole page scrolls naturally with the window. */}
       <div className="mx-auto w-full max-w-4xl px-2 pb-6 md:px-4 md:pb-12">
         <motion.div
           initial={{ opacity: 0 }}

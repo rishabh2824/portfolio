@@ -1,4 +1,3 @@
-import AceTernityLogo from "@/components/logos/aceternity";
 import SlideShow from "@/components/slide-show";
 import { Button } from "@/components/ui/button";
 import { TypographyH3, TypographyP } from "@/components/ui/typography";
@@ -130,12 +129,6 @@ const PROJECT_SKILLS = {
     bg: "black",
     fg: "white",
     icon: <Component />,
-  },
-  aceternity: {
-    title: "Aceternity",
-    bg: "black",
-    fg: "white",
-    icon: <AceTernityLogo />,
   },
   tailwind: {
     title: "Tailwind CSS",
@@ -347,7 +340,6 @@ const projects: Project[] = [
       frontend: [
         PROJECT_SKILLS.ts,
         PROJECT_SKILLS.next,
-        PROJECT_SKILLS.aceternity,
         PROJECT_SKILLS.tailwind,
       ],
       backend: [PROJECT_SKILLS.sanity],

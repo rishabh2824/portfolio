@@ -4,12 +4,12 @@ import { useTheme } from "next-themes";
 import { flushSync } from "react-dom";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { useToast } from "../ui/use-toast";
+import { cn } from "@/utils/utils";
+import { useToast } from "./ui/use-toast";
 import { themeDisclaimers } from "@/data/constants";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
-export default function FunnyThemeToggle({
+export default function ThemeToggle({
   className,
 }: {
   className?: string;
@@ -19,7 +19,6 @@ export default function FunnyThemeToggle({
   const { toast } = useToast();
 
   const toggleTheme = async (newTheme: string, event?: React.MouseEvent) => {
-    // @ts-ignore
     if (!document.startViewTransition || !event) {
       setTheme(newTheme);
       return;
@@ -104,7 +103,11 @@ export default function FunnyThemeToggle({
           <PopoverContent className="z-[99999] flex flex-col items-center gap-2">
             {/* <p className="text-sm">these stunts are done by professional only</p> */}
             <p className="text-sm text-center">
-              {themeDisclaimers.light[counter.light]}
+              {
+                themeDisclaimers.light[
+                  counter.light % themeDisclaimers.light.length
+                ]
+              }
             </p>
             <Button onClick={goLight}>Go Light</Button>
           </PopoverContent>

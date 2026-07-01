@@ -17,7 +17,7 @@ import projects, { Project } from "@/data/projects";
 import { SectionHeader } from "./section-header";
 import SectionWrapper from "../ui/section-wrapper";
 import BorderGlow from "../ui/border-glow";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 // Pinwheel bento placement: two WIDE tiles (3/5 cols) on a diagonal, two narrow
 // tiles (2/5 cols) on the other — all one row tall, so equal heights.

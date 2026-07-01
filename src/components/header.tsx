@@ -1,9 +1,9 @@
 "use client";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
-import FunnyThemeToggle from "../theme/funny-theme-toggle";
-import { Button } from "../ui/button";
+import { cn } from "@/utils/utils";
+import ThemeToggle from "./theme-toggle";
+import { Button } from "./ui/button";
 import { config } from "@/data/config";
 
 interface HeaderProps {
@@ -29,7 +29,7 @@ const Header = ({ loader }: HeaderProps) => {
     >
       <div className="relative flex items-center justify-end text-xs font-normal lowercase sm:text-[15px]">
         <Link
-          href="/"
+          href="/public"
           className="absolute left-0 flex items-center justify-center text-foreground no-underline"
         >
           <Button variant={"link"} className="text-md">
@@ -37,7 +37,7 @@ const Header = ({ loader }: HeaderProps) => {
           </Button>
         </Link>
 
-        <FunnyThemeToggle className="w-6 h-6 hidden md:flex" />
+        <ThemeToggle className="w-6 h-6 hidden md:flex" />
       </div>
     </motion.header>
   );

@@ -1,5 +1,5 @@
 "use client";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion, useAnimationControls } from "motion/react";
 

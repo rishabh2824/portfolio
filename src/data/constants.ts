@@ -1,4 +1,3 @@
-// thoda zada ts ho gya idhar
 export enum SkillNames {
   JS = "js",
   TS = "ts",
@@ -26,6 +25,7 @@ export enum SkillNames {
   VIM = "vim",
   VERCEL = "vercel",
 }
+
 export type Skill = {
   id: number;
   name: string;
@@ -34,6 +34,7 @@ export type Skill = {
   color: string;
   icon: string;
 };
+
 export const SKILLS: Record<SkillNames, Skill> = {
   [SkillNames.JS]: {
     id: 1,
@@ -251,6 +252,8 @@ export type Experience = {
   endDate: string;
   title: string;
   company: string;
+  /** Public path to the company logo, e.g. "/assets/logos/acme.svg". Falls back to a monogram/briefcase node when omitted. */
+  logo?: string;
   description: string[];
   skills: SkillNames[];
 };
@@ -262,6 +265,7 @@ export const EXPERIENCE: Experience[] = [
     endDate: "Present",
     title: "Full Stack Developer",
     company: "OmniNexus Sdn Bhd",
+    logo: "/assets/logos/omninexus.svg",
     description: [
       "Built a custom image editor from scratch, cutting $4.8k/year in SaaS costs.",
       "Architected async job queues processing 1k+ AI tasks daily with bulletproof reliability.",
@@ -279,27 +283,62 @@ export const EXPERIENCE: Experience[] = [
       SkillNames.GCP,
     ],
   },
+  // --- SAMPLE ENTRIES (placeholder content + logos — replace with real ones) ---
   {
     id: 2,
-    startDate: "Apr 2022",
-    endDate: "Dec 2024",
-    title: "Freelance Full Stack Developer",
-    company: "Self-employed",
+    startDate: "Jan 2023",
+    endDate: "Nov 2024",
+    title: "Frontend Engineer",
+    company: "Acme Labs",
+    logo: "/assets/logos/acme.svg",
     description: [
-      "Transformed chaotic Excel sheets into polished internal tools for various clients.",
-      "Shipped dashboards and custom CMS platforms tailored to each client's workflow.",
-      "Automated repetitive processes, improving efficiency and reducing human error.",
-      "Focused on clean, maintainable code and interfaces that users actually enjoy.",
+      "Led the rebuild of the customer dashboard, lifting engagement by 25%.",
+      "Established a reusable component library adopted across 4 product teams.",
+      "Drove Core Web Vitals into the green, improving LCP by 1.2s.",
     ],
     skills: [
       SkillNames.REACT,
-      SkillNames.VUE,
+      SkillNames.TS,
+      SkillNames.TAILWIND,
+      SkillNames.NEXTJS,
+    ],
+  },
+  {
+    id: 3,
+    startDate: "May 2022",
+    endDate: "Dec 2022",
+    title: "Software Engineer Intern",
+    company: "TechNova",
+    logo: "/assets/logos/technova.svg",
+    description: [
+      "Built internal tooling that automated a manual QA process, saving ~10 hrs/week.",
+      "Added end-to-end tests that cut regression escapes by 30%.",
+      "Shipped three production features under mentorship during a 6-month internship.",
+    ],
+    skills: [
+      SkillNames.JS,
       SkillNames.NODEJS,
       SkillNames.EXPRESS,
       SkillNames.MONGODB,
-      SkillNames.POSTGRES,
-      SkillNames.TAILWIND,
-      SkillNames.WORDPRESS,
+    ],
+  },
+  {
+    id: 4,
+    startDate: "2021",
+    endDate: "2022",
+    title: "Open Source Contributor",
+    company: "Hyperloop OSS",
+    logo: "/assets/logos/hyperloop.svg",
+    description: [
+      "Merged 40+ PRs across docs, bug fixes, and developer-experience tooling.",
+      "Maintained a CLI plugin with 2k+ weekly downloads.",
+      "Triaged community issues and mentored first-time contributors.",
+    ],
+    skills: [
+      SkillNames.TS,
+      SkillNames.GIT,
+      SkillNames.GITHUB,
+      SkillNames.LINUX,
     ],
   },
 ];

@@ -1,5 +1,3 @@
-"use client";
-
 import SmoothScroll from "@/components/smooth-scroll";
 import AnimatedBackground from "@/components/animated-background";
 import SkillsSection from "@/components/sections/skills";

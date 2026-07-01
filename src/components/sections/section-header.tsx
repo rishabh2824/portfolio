@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import Link from "next/link";
 import { BoxReveal } from "../reveal-animations";
 import { ReactNode } from "react";

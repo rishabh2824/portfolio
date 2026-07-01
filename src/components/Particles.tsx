@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useMousePosition } from "@/utils/mouse";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 interface ParticlesProps {
   className?: string;

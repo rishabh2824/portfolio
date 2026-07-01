@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 const SlideShow = ({ images }: { images: string[] }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({

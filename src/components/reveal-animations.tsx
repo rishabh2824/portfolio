@@ -2,7 +2,7 @@
 
 import { motion, useAnimation, useInView } from "motion/react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { ReactNode, useEffect, useRef } from "react";
 
 interface BlurIntProps {
