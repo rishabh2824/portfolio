@@ -320,14 +320,9 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
 
     await sleep(900);
 
-    if (isMobile) {
-      const mobileKeyCaps = allObjects.filter(
-        (obj) => obj.name === "keycap-mobile",
-      );
-      mobileKeyCaps.forEach((keycap) => {
-        keycap.visible = true;
-      });
-    } else {
+    // Desktop-only icon overlay; the scene no longer ships "keycap-mobile"
+    // objects (the base "keycap" reveal below already covers mobile).
+    if (!isMobile) {
       const desktopKeyCaps = allObjects.filter(
         (obj) => obj.name === "keycap-desktop",
       );
@@ -562,7 +557,9 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
           setSplineApp(app);
           bypassLoading();
         }}
-        scene="/assets/skills-keyboard.spline"
+        // scene="/assets/skills-keyboard.spline"
+          scene="https://prod.spline.design/2tuMcvcNm5jiAsa6/scene.splinecode"
+
       />
     </Suspense>
   );

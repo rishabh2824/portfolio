@@ -54,12 +54,13 @@ const ExperienceTimeline = ({ experiences }: ExperienceTimelineProps) => {
     return () => ro.disconnect();
   }, [experiences.length]);
 
-  // Map scroll so the beam's front sits on the viewport centre: it's empty when
-  // the timeline's top hits centre and full when its bottom does. The beam then
-  // grows smoothly as each row crosses the middle of the screen.
+  // Map scroll so the beam's front — and therefore each row's ignite/reveal —
+  // sits just BELOW the viewport centre (~60% down). A row lights up slightly
+  // below the middle, so as you scroll a little further the card rises and
+  // settles into the vertical centre instead of appearing already near the top.
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start 50%", "end 50%"],
+    offset: ["start 60%", "end 60%"],
   });
   const beamHeight = useTransform(scrollYProgress, [0, 1], [0, height]);
   const beamOpacity = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
@@ -175,14 +176,15 @@ const ExperienceNode = ({
             transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
           />
         )}
-        <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border border-white/15! bg-background shadow-lg md:h-14 md:w-14">
+        <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border border-black/10! bg-white shadow-lg md:h-14 md:w-14">
           {experience.logo ? (
-            // Plain <img>: serves the placeholder SVGs without next/image's
-            // dangerouslyAllowSVG config, and matches how skill icons render.
+            // Real company logos sit on a white chip with object-contain so their
+            // varied shapes / transparent backgrounds (and dark wordmarks) read
+            // cleanly without cropping. Plain <img> avoids next/image SVG config.
             <img
               src={experience.logo}
               alt={`${experience.company} logo`}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain p-1"
             />
           ) : (
             <Briefcase className="h-6 w-6 text-muted-foreground" aria-hidden />
