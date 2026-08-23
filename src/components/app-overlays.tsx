@@ -1,7 +1,7 @@
 "use client";
 
-import Particles from "@/components/Particles";
 import NyanCat from "@/components/nyan-cat";
+import Particles from "@/components/Particles";
 import { usePerfProfile } from "@/hooks/use-perf-profile";
 
 export default function AppOverlays() {

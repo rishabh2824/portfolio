@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useState } from "react";
 
 const ScrollDownIcon = () => {
   const [show, setShow] = useState(true);

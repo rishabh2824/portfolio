@@ -1,8 +1,8 @@
 "use client";
 
 import { EXPERIENCE } from "@/data/constants";
-import { SectionHeader } from "./section-header";
 import ExperienceTimeline from "./experience-timeline";
+import { SectionHeader } from "./section-header";
 
 /**
  * Experience section. The id stays "experience" because the Spline keyboard's

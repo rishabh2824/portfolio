@@ -1,5 +1,5 @@
-import { cn } from "@/utils/utils";
 import { ReactNode } from "react";
+import { cn } from "@/utils/utils";
 
 export function TypographyH3({
   children,

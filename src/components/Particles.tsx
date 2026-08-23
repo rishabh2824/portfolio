@@ -1,15 +1,26 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useMousePosition } from "@/utils/mouse";
+import { usePauseOnHidden } from "@/hooks/use-pause-on-hidden";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/utils/utils";
+
+// Precomputed rgba strings bucketed by alpha (2 decimal places) so drawing a
+// circle reuses a cached fillStyle string instead of allocating a fresh
+// template string every circle, every frame.
+const ALPHA_STEPS = 100;
+const ALPHA_COLORS = Array.from(
+  { length: ALPHA_STEPS + 1 },
+  (_, i) => `rgba(255, 255, 255, ${(i / ALPHA_STEPS).toFixed(2)})`,
+);
+const alphaColor = (alpha: number) =>
+  ALPHA_COLORS[Math.round(Math.min(Math.max(alpha, 0), 1) * ALPHA_STEPS)];
 
 interface ParticlesProps {
   className?: string;
   quantity?: number;
   staticity?: number;
   ease?: number;
-  refresh?: boolean;
   /** Device-pixel-ratio ceiling — caps fill cost on high-DPI / low-end screens. */
   maxDpr?: number;
 }
@@ -32,69 +43,76 @@ export default function Particles({
   quantity = 30,
   staticity = 50,
   ease = 50,
-  refresh = false,
   maxDpr = 2,
 }: ParticlesProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const context = useRef<CanvasRenderingContext2D | null>(null);
   const circles = useRef<Circle[]>([]);
-  const mousePosition = useMousePosition();
   const mouse = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const canvasSize = useRef<{ w: number; h: number }>({ w: 0, h: 0 });
   const rafId = useRef<number>(0);
+  const resizeTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   // Cap the device-pixel-ratio: a 3x screen otherwise triples the fill cost.
   const dpr =
     typeof window !== "undefined"
       ? Math.min(window.devicePixelRatio, maxDpr)
       : 1;
+  // A drifting, magnetism-chasing field of particles is pure motion with no
+  // informational content, so it's gated off entirely rather than just
+  // throttled — the field still renders once, statically, via initCanvas.
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     if (canvasRef.current) {
       context.current = canvasRef.current.getContext("2d");
     }
     initCanvas();
-    animate();
-    window.addEventListener("resize", initCanvas);
+    if (!prefersReducedMotion) animate();
 
-    // Pause the render loop while the tab is hidden — no point burning frames
-    // (and battery) drawing to a canvas nobody can see.
-    const onVisibility = () => {
-      if (document.hidden) {
-        cancelAnimationFrame(rafId.current);
-      } else {
-        cancelAnimationFrame(rafId.current);
-        animate();
-      }
+    // Dragging a window edge can fire resize dozens of times a second; each
+    // one wipes and reallocates every circle, so settle on the final size
+    // instead of recomputing on every intermediate event.
+    const onResize = () => {
+      clearTimeout(resizeTimeout.current);
+      resizeTimeout.current = setTimeout(initCanvas, 150);
     };
-    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("resize", onResize);
+
+    // Writes straight into the mouse ref instead of React state — the canvas
+    // is already driven by requestAnimationFrame, so there's no reason for a
+    // mousemove event (up to ~120/sec on a high-poll mouse) to trigger a
+    // React re-render (and re-run this whole effect) on every tick.
+    window.addEventListener("mousemove", onMouseMove);
 
     return () => {
       cancelAnimationFrame(rafId.current);
-      window.removeEventListener("resize", initCanvas);
-      document.removeEventListener("visibilitychange", onVisibility);
+      clearTimeout(resizeTimeout.current);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("mousemove", onMouseMove);
     };
-  }, []);
+    // Re-run whenever the adaptive-performance props change (e.g. crossing
+    // the mobile breakpoint) instead of freezing them at mount.
+  }, [quantity, staticity, ease, maxDpr, prefersReducedMotion]);
 
-  useEffect(() => {
-    onMouseMove();
-  }, [mousePosition.x, mousePosition.y]);
-
-  useEffect(() => {
-    initCanvas();
-  }, [refresh]);
+  usePauseOnHidden(
+    () => cancelAnimationFrame(rafId.current),
+    () => {
+      if (!prefersReducedMotion) animate();
+    },
+  );
 
   const initCanvas = () => {
     resizeCanvas();
     drawParticles();
   };
 
-  const onMouseMove = () => {
+  const onMouseMove = (event: MouseEvent) => {
     if (canvasRef.current) {
       const rect = canvasRef.current.getBoundingClientRect();
       const { w, h } = canvasSize.current;
-      const x = mousePosition.x - rect.left - w / 2;
-      const y = mousePosition.y - rect.top - h / 2;
+      const x = event.clientX - rect.left - w / 2;
+      const y = event.clientY - rect.top - h / 2;
       const inside = x < w / 2 && x > -w / 2 && y < h / 2 && y > -h / 2;
       if (inside) {
         mouse.current.x = x;
@@ -122,8 +140,11 @@ export default function Particles({
     const translateX = 0;
     const translateY = 0;
     const size = Math.floor(Math.random() * 2) + 0.1;
-    const alpha = 0;
     const targetAlpha = parseFloat((Math.random() * 0.6 + 0.1).toFixed(1));
+    // Normally starts transparent and fades in via the rAF loop's alpha
+    // ramp; with that loop gated off for reduced motion, start at the
+    // target alpha directly so the one-shot draw is actually visible.
+    const alpha = prefersReducedMotion ? targetAlpha : 0;
     const dx = (Math.random() - 0.5) * 0.2;
     const dy = (Math.random() - 0.5) * 0.2;
     const magnetism = 0.1 + Math.random() * 4;
@@ -144,12 +165,13 @@ export default function Particles({
   const drawCircle = (circle: Circle, update = false) => {
     if (context.current) {
       const { x, y, translateX, translateY, size, alpha } = circle;
-      context.current.translate(translateX, translateY);
+      // Offset the draw position directly instead of a translate()/
+      // setTransform() pair per circle — avoids mutating (and immediately
+      // resetting) the canvas transform matrix on every single draw call.
       context.current.beginPath();
-      context.current.arc(x, y, size, 0, 2 * Math.PI);
-      context.current.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+      context.current.arc(x + translateX, y + translateY, size, 0, 2 * Math.PI);
+      context.current.fillStyle = alphaColor(alpha);
       context.current.fill();
-      context.current.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       if (!update) {
         circles.current.push(circle);
@@ -191,18 +213,20 @@ export default function Particles({
 
   const animate = () => {
     clearContext();
-    circles.current.forEach((circle: Circle, i: number) => {
-      // Handle the alpha value
-      const edge = [
+    // Reverse iteration so splice-ing out an out-of-bounds circle below
+    // doesn't shift a not-yet-visited element into the current index and
+    // cause it to get skipped (which a forward forEach + splice does).
+    for (let i = circles.current.length - 1; i >= 0; i--) {
+      const circle = circles.current[i];
+      // Handle the alpha value — distance to the nearest of the 4 edges,
+      // without allocating an array + reduce closure per circle per frame.
+      const closestEdge = Math.min(
         circle.x + circle.translateX - circle.size, // distance from left edge
         canvasSize.current.w - circle.x - circle.translateX - circle.size, // distance from right edge
         circle.y + circle.translateY - circle.size, // distance from top edge
         canvasSize.current.h - circle.y - circle.translateY - circle.size, // distance from bottom edge
-      ];
-      const closestEdge = edge.reduce((a, b) => Math.min(a, b));
-      const remapClosestEdge = parseFloat(
-        remapValue(closestEdge, 0, 20, 0, 1).toFixed(2),
       );
+      const remapClosestEdge = remapValue(closestEdge, 0, 20, 0, 1);
       if (remapClosestEdge > 1) {
         circle.alpha += 0.02;
         if (circle.alpha > circle.targetAlpha) {
@@ -233,19 +257,9 @@ export default function Particles({
         drawCircle(newCircle);
         // update the circle position
       } else {
-        drawCircle(
-          {
-            ...circle,
-            x: circle.x,
-            y: circle.y,
-            translateX: circle.translateX,
-            translateY: circle.translateY,
-            alpha: circle.alpha,
-          },
-          true,
-        );
+        drawCircle(circle, true);
       }
-    });
+    }
     rafId.current = window.requestAnimationFrame(animate);
   };
 

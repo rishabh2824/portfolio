@@ -2,8 +2,6 @@ import Preloader from "./preloader";
 import { ThemeProvider } from "./theme-provider";
 import { Toaster } from "./ui/toaster";
 
-import { TooltipProvider } from "./ui/tooltip";
-
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <ThemeProvider
@@ -12,7 +10,7 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
       disableTransitionOnChange
     >
       <Preloader>
-        <TooltipProvider>{children}</TooltipProvider>
+        {children}
         <Toaster />
       </Preloader>
     </ThemeProvider>

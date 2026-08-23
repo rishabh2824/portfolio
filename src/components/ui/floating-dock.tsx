@@ -4,7 +4,6 @@
  * Mobile navbar is better positioned at bottom right.
  **/
 
-import { cn } from "@/utils/utils";
 import {
   AnimatePresence,
   MotionValue,
@@ -15,33 +14,23 @@ import {
   useTransform,
 } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { cn } from "@/utils/utils";
 
 export const FloatingDock = ({
   items,
-  desktopClassName,
-  mobileClassName,
 }: {
   items: { title: string; icon: React.ReactNode }[];
-  desktopClassName?: string;
-  mobileClassName?: string;
 }) => {
-  return (
-    <>
-      <FloatingDockDesktop items={items} className={desktopClassName} />
-    </>
-  );
+  return <FloatingDockDesktop items={items} />;
 };
 
 const FloatingDockDesktop = ({
   items,
-  className,
 }: {
   items: { title: string; icon: React.ReactNode }[];
-  className?: string;
 }) => {
   let mouseX = useMotionValue(Infinity);
   const [showHint, setShowHint] = useState(true);
-  const timer = useRef<NodeJS.Timeout>(null);
   const controls = useAnimation();
   useEffect(() => {
     if (showHint) {
@@ -62,7 +51,6 @@ const FloatingDockDesktop = ({
     }
     return () => {
       controls.stop();
-      if (timer.current) clearInterval(timer.current);
     };
   }, [showHint]);
   return (
@@ -76,7 +64,6 @@ const FloatingDockDesktop = ({
         className={cn(
           "flex gap-2 md:gap-4",
           "mx-auto h-16 items-end  rounded-2xl bg-white/30 dark:bg-black/50  px-4 pb-3",
-          className,
         )}
       >
         {items.map((item) => (
@@ -158,6 +145,8 @@ function IconContainer({
   return (
     <motion.div
       ref={ref}
+      role="img"
+      aria-label={title}
       style={{ width, height }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -166,6 +155,7 @@ function IconContainer({
       <AnimatePresence>
         {hovered && (
           <motion.div
+            aria-hidden="true"
             initial={{ opacity: 0, y: 10, x: "-50%" }}
             animate={{ opacity: 1, y: 0, x: "-50%" }}
             exit={{ opacity: 0, y: 2, x: "-50%" }}
@@ -176,6 +166,7 @@ function IconContainer({
         )}
       </AnimatePresence>
       <motion.div
+        aria-hidden="true"
         style={{ width: widthIcon, height: heightIcon }}
         className="flex items-center justify-center"
       >

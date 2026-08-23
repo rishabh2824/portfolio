@@ -1,7 +1,7 @@
-import { cn } from "@/utils/utils";
 import Link from "next/link";
-import { BoxReveal } from "../reveal-animations";
 import { ReactNode } from "react";
+import { cn } from "@/utils/utils";
+import { BoxReveal } from "../reveal-animations";
 
 export const SectionHeader = ({
   id,

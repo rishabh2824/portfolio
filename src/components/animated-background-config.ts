@@ -1,9 +1,4 @@
-export type Section =
-  | "hero"
-  | "about"
-  | "skills"
-  | "experience"
-  | "projects";
+export type Section = "hero" | "skills" | "experience" | "projects";
 
 const STATES = {
   hero: {
@@ -16,26 +11,6 @@ const STATES = {
       scale: { x: 0.3, y: 0.3, z: 0.3 },
       position: { x: 0, y: -200, z: 0 },
       rotation: { x: 0, y: 0, z: 0 },
-    },
-  },
-  about: {
-    desktop: {
-      scale: { x: 0.4, y: 0.4, z: 0.4 },
-      position: { x: 0, y: -40, z: 0 },
-      rotation: {
-        x: 0,
-        y: Math.PI / 12,
-        z: 0,
-      },
-    },
-    mobile: {
-      scale: { x: 0.4, y: 0.4, z: 0.4 },
-      position: { x: 0, y: -40, z: 0 },
-      rotation: {
-        x: 0,
-        y: Math.PI / 6,
-        z: 0,
-      },
     },
   },
   experience: {
@@ -121,7 +96,7 @@ export const getKeyboardState = ({
       : width / DESKTOP_REF_WIDTH;
 
     // Clamp values to prevent extremes
-    const minScale = isMobile ? 0.5 : 0.5;
+    const minScale = 0.5;
     const maxScale = isMobile ? 0.6 : 1.15;
 
     return Math.min(Math.max(targetScale, minScale), maxScale);

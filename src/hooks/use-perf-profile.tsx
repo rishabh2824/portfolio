@@ -42,10 +42,8 @@ export function usePerfProfile(): PerfProfile {
 
   const { isMobile, ready } = state;
 
-  return React.useMemo<PerfProfile>(() => {
-    // Viewport size scales quality down on small screens.
-    const particleCount = isMobile ? 30 : 100;
-    const maxDpr = isMobile ? 1.5 : 2;
-    return { particleCount, maxDpr, ready };
-  }, [isMobile, ready]);
+  // Viewport size scales quality down on small screens.
+  const particleCount = isMobile ? 30 : 100;
+  const maxDpr = isMobile ? 1.5 : 2;
+  return { particleCount, maxDpr, ready };
 }

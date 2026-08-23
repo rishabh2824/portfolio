@@ -1,19 +1,15 @@
-import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import * as React from "react";
 import { flushSync } from "react-dom";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/utils/utils";
-import { useToast } from "./ui/use-toast";
 import { themeDisclaimers } from "@/data/constants";
+import { cn } from "@/utils/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { useToast } from "./ui/use-toast";
 
-export default function ThemeToggle({
-  className,
-}: {
-  className?: string;
-}) {
+export default function ThemeToggle({ className }: { className?: string }) {
   const { setTheme, theme } = useTheme();
   const [counter, setCounter] = React.useState({ dark: 0, light: 0 });
   const { toast } = useToast();
@@ -25,7 +21,7 @@ export default function ThemeToggle({
     }
 
     const { top, left, width, height } = (
-      event.target as HTMLElement
+      event.currentTarget as HTMLElement
     ).getBoundingClientRect();
     const x = left + width / 2;
     const y = top + height / 2;
@@ -58,14 +54,14 @@ export default function ThemeToggle({
   };
 
   const goLight = (e: React.MouseEvent) => {
-    setCounter({ ...counter, light: counter.light + 1 });
+    setCounter((prev) => ({ ...prev, light: prev.light + 1 }));
     toggleTheme("light", e);
   };
 
   const goDark = (e: React.MouseEvent) => {
     const description =
       themeDisclaimers.dark[counter.dark % themeDisclaimers.dark.length];
-    setCounter({ ...counter, dark: counter.dark + 1 });
+    setCounter((prev) => ({ ...prev, dark: prev.dark + 1 }));
     toast({
       description: description,
       className:

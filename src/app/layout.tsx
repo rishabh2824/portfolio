@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { Inter, Archivo_Black } from "next/font/google";
+import { Archivo_Black, Inter } from "next/font/google";
 import "./globals.css";
+import { GoogleAnalytics } from "@next/third-parties/google";
+import AppOverlays from "@/components/app-overlays";
+import Header from "@/components/header";
+import { Providers } from "@/components/providers";
 import { config } from "@/data/config";
 
-import Header from "@/components/header";
-import AppOverlays from "@/components/app-overlays";
-import { Providers } from "@/components/providers";
-import { GoogleAnalytics } from "@next/third-parties/google";
-
 export const metadata: Metadata = {
+  metadataBase: new URL(config.site),
   title: config.title,
   description: config.description.long,
   authors: [{ name: config.author }],
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: config.title,
     description: config.description.short,
   },

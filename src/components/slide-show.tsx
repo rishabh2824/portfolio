@@ -1,8 +1,10 @@
 import useEmblaCarousel from "embla-carousel-react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { cn } from "@/utils/utils";
+import { Button } from "./ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,8 +12,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-import { Button } from "./ui/button";
-import { cn } from "@/utils/utils";
 
 const SlideShow = ({ images }: { images: string[] }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -20,21 +20,26 @@ const SlideShow = ({ images }: { images: string[] }) => {
   });
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  // Bumped by every manual navigation so the autoplay effect below tears
+  // down and restarts its timer — otherwise a manual click could be
+  // immediately overridden by an autoplay tick already in flight.
+  const [autoplayTick, setAutoplayTick] = useState(0);
 
-  const scrollPrev = useCallback(() => {
+  const scrollPrev = () => {
     emblaApi?.scrollPrev();
-  }, [emblaApi]);
+    setAutoplayTick((t) => t + 1);
+  };
 
-  const scrollNext = useCallback(() => {
+  const scrollNext = () => {
     emblaApi?.scrollNext();
-  }, [emblaApi]);
+    setAutoplayTick((t) => t + 1);
+  };
 
-  const scrollTo = useCallback(
-    (index: number) => {
-      emblaApi?.scrollTo(index);
-    },
-    [emblaApi],
-  );
+  const scrollTo = (index: number) => {
+    emblaApi?.scrollTo(index);
+    setAutoplayTick((t) => t + 1);
+  };
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -54,18 +59,24 @@ const SlideShow = ({ images }: { images: string[] }) => {
   }, [emblaApi]);
 
   useEffect(() => {
-    if (!emblaApi || images.length <= 1 || selectedImage) return;
+    if (!emblaApi || images.length <= 1 || selectedImage || isPaused) return;
 
     const interval = window.setInterval(() => {
       emblaApi.scrollNext();
     }, 3500);
 
     return () => window.clearInterval(interval);
-  }, [emblaApi, images.length, selectedImage]);
+  }, [emblaApi, images.length, selectedImage, isPaused, autoplayTick]);
 
   return (
     <>
-      <div className="relative">
+      <div
+        className="relative"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onFocus={() => setIsPaused(true)}
+        onBlur={() => setIsPaused(false)}
+      >
         <div className="overflow-hidden px-12" ref={emblaRef}>
           <div className="flex gap-4">
             {images.map((image, idx) => (
@@ -124,19 +135,35 @@ const SlideShow = ({ images }: { images: string[] }) => {
             >
               <ChevronRight className="size-4" />
             </Button>
-            <div className="mt-4 flex justify-center gap-2">
-              {images.map((image, idx) => (
-                <button
-                  key={`dot-${image}-${idx}`}
-                  type="button"
-                  aria-label={`Go to screenshot ${idx + 1}`}
-                  onClick={() => scrollTo(idx)}
-                  className={cn(
-                    "size-2 rounded-full bg-muted-foreground/40 transition-colors",
-                    selectedIndex === idx && "bg-foreground",
-                  )}
-                />
-              ))}
+            <div className="mt-4 flex items-center justify-center gap-3">
+              <div className="flex gap-2">
+                {images.map((image, idx) => (
+                  <button
+                    key={`dot-${image}-${idx}`}
+                    type="button"
+                    aria-label={`Go to screenshot ${idx + 1}`}
+                    onClick={() => scrollTo(idx)}
+                    className={cn(
+                      "size-2 rounded-full bg-muted-foreground/40 transition-colors",
+                      selectedIndex === idx && "bg-foreground",
+                    )}
+                  />
+                ))}
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                aria-label={isPaused ? "Play slideshow" : "Pause slideshow"}
+                onClick={() => setIsPaused((p) => !p)}
+                className="size-6 rounded-full"
+              >
+                {isPaused ? (
+                  <Play className="size-3" />
+                ) : (
+                  <Pause className="size-3" />
+                )}
+              </Button>
             </div>
           </>
         )}

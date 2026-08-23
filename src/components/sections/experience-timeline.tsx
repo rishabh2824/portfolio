@@ -1,15 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Briefcase } from "lucide-react";
 import {
+  type MotionValue,
   motion,
+  useMotionValueEvent,
   useScroll,
   useTransform,
-  useMotionValueEvent,
-  type MotionValue,
 } from "motion/react";
-import { Briefcase } from "lucide-react";
-import { type Experience, SKILLS, type SkillNames } from "@/data/constants";
+import { useEffect, useRef, useState } from "react";
+import {
+  EXPERIENCE_SKILLS,
+  type Experience,
+  type SkillNames,
+} from "@/data/constants";
 import { cn } from "@/utils/utils";
 
 type ExperienceTimelineProps = {
@@ -66,7 +70,10 @@ const ExperienceTimeline = ({ experiences }: ExperienceTimelineProps) => {
   const beamOpacity = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
   return (
-    <div ref={containerRef} className="relative mx-auto w-full max-w-[90rem] px-4">
+    <div
+      ref={containerRef}
+      className="relative mx-auto w-full max-w-[90rem] px-4"
+    >
       {/* Growing beam only — no static rail. Bright fuchsia→purple with a soft
           glow so it reads against the dark-blue background. Centered on desktop,
           left rail on mobile. */}
@@ -215,7 +222,11 @@ const ExperienceGlassCard = ({
           ? { opacity: 1, y: 0, x: 0, scale: 1 }
           : { opacity: 0, y: 24, x: fromRight ? 24 : -24, scale: 0.98 }
       }
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: revealed ? 0.07 : 0 }}
+      transition={{
+        duration: 0.55,
+        ease: [0.22, 1, 0.36, 1],
+        delay: revealed ? 0.07 : 0,
+      }}
       className="rounded-xl border border-white/15! bg-white/[0.06] px-6 py-5 shadow-xl backdrop-blur-2xl"
     >
       {/* Single-column stack: title, company + date, bullets, then pills */}
@@ -240,7 +251,7 @@ const ExperienceGlassCard = ({
 
       <div className="mt-4 flex flex-wrap gap-1.5">
         {experience.skills.map((skillName) => {
-          const skill = SKILLS[skillName as SkillNames];
+          const skill = EXPERIENCE_SKILLS[skillName as SkillNames];
           if (!skill) return null;
           return (
             <span
@@ -250,6 +261,7 @@ const ExperienceGlassCard = ({
               <img
                 src={skill.icon}
                 alt={skill.label}
+                loading="lazy"
                 className="h-3.5 w-3.5 object-contain"
               />
               {skill.label}

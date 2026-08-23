@@ -44,317 +44,186 @@ export enum SkillNames {
 }
 
 export type Skill = {
-  id: number;
   name: string;
   label: string;
   shortDescription: string;
-  color: string;
   icon: string;
 };
 
-export const SKILLS: Record<SkillNames, Skill> = {
+// The ~9 keyboard-only keycap entries live in a separate module
+// (keyboard-skills.ts) so the eagerly-bundled experience timeline — which
+// imports only EXPERIENCE_SKILLS from this file — never pulls them in.
+export const EXPERIENCE_SKILLS: Partial<Record<SkillNames, Skill>> = {
   [SkillNames.JS]: {
-    id: 1,
     name: "js",
     label: "JavaScript",
     shortDescription: "yeeting code into the DOM since '95, no cap! 💯🚀",
-    color: "#f0db4f",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+    icon: "/assets/skills/js.svg",
   },
   [SkillNames.TS]: {
-    id: 2,
     name: "ts",
     label: "TypeScript",
     shortDescription:
       "JavaScript's overachieving cousin who's always flexing 💯🔒",
-    color: "#007acc",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
+    icon: "/assets/skills/ts.svg",
   },
   [SkillNames.REACT]: {
-    id: 5,
     name: "react",
     label: "React",
     shortDescription: `"use using" 
 using use = useUsing("use")`,
-    color: "#61dafb",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
-  },
-  [SkillNames.NEXTJS]: {
-    id: 7,
-    name: "nextjs",
-    label: "Next.js",
-    shortDescription:
-      "the drama queen of front-end frameworks, and we stan! 👑📜",
-    color: "#fff",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg",
+    icon: "/assets/skills/react.svg",
   },
   [SkillNames.TAILWIND]: {
-    id: 8,
     name: "tailwindcss",
     label: "Tailwind",
     shortDescription: "utility classes hitting different fr fr 🌪️🔥",
-    color: "#38bdf8",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg",
+    icon: "/assets/skills/tailwindcss.svg",
   },
   [SkillNames.NODEJS]: {
-    id: 9,
     name: "nodejs",
     label: "Node.js",
     shortDescription: "JavaScript said 'sike, I'm backend now', deadass! 🔙🔚",
-    color: "#6cc24a",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+    icon: "/assets/skills/nodejs.svg",
   },
   [SkillNames.EXPRESS]: {
-    id: 10,
     name: "express",
     label: "Express",
     shortDescription: "middlewares go dummy hard, no cap! 🚂💨",
-    color: "#fff",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg",
+    icon: "/assets/skills/express.svg",
   },
   [SkillNames.POSTGRES]: {
-    id: 11,
     name: "postgres",
     label: "PostgreSQL",
     shortDescription: "SQL but make it fashion, purr 💅🐘",
-    color: "#336791",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
+    icon: "/assets/skills/postgresql.svg",
   },
   [SkillNames.MONGODB]: {
-    id: 12,
     name: "mongodb",
     label: "MongoDB",
     shortDescription: "flexin' with that NoSQL drip, respectfully! 💪🍃",
-    color: "#336791",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
+    icon: "/assets/skills/mongodb.svg",
   },
   [SkillNames.GIT]: {
-    id: 13,
     name: "git",
     label: "Git",
     shortDescription: "the code's personal bodyguard, no cap! 🕵️‍♂️🔄",
-    color: "#f1502f",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
+    icon: "/assets/skills/git.svg",
   },
   [SkillNames.GITHUB]: {
-    id: 14,
     name: "github",
     label: "GitHub",
     shortDescription: "sliding into those pull requests, IYKYK! 🐙",
-    color: "#000000",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg",
+    icon: "/assets/skills/github.svg",
   },
   [SkillNames.LINUX]: {
-    id: 19,
     name: "linux",
     label: "Linux",
     shortDescription: "where 'chmod 777' is the ultimate flex 🔓🙌",
-    color: "#fff",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg",
-  },
-  [SkillNames.DOCKER]: {
-    id: 20,
-    name: "docker",
-    label: "Docker",
-    shortDescription: "The best containerization! 🐳🔥",
-    color: "#2496ed",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
-  },
-  [SkillNames.AWS]: {
-    id: 22,
-    name: "aws",
-    label: "AWS",
-    shortDescription:
-      "always extra, making everything more complicated, period! 🌐👨‍💻",
-    color: "#ff9900",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/aws/aws-original.svg",
-  },
-  // --- 3D keyboard keycap refresh (colored devicon icons unless noted) ---
-  [SkillNames.THREEJS]: {
-    id: 46,
-    name: "threejs",
-    label: "Three.js",
-    shortDescription: "turning divs into universes, no cap 🌌🧊",
-    color: "#fff",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/threejs/threejs-original.svg",
-  },
-  [SkillNames.TANSTACK]: {
-    id: 47,
-    name: "tanstack",
-    label: "TanStack",
-    // No devicon asset exists for TanStack; simple-icons is single-color (black).
-    shortDescription: "query, table, router — the stack said 'why not all three' 🐨🔥",
-    color: "#ff4154",
-    icon: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/tanstack.svg",
-  },
-  [SkillNames.MYSQL]: {
-    id: 48,
-    name: "mysql",
-    label: "MySQL",
-    shortDescription: "the OG relational database, still not dolphin-brained 🐬🗄️",
-    color: "#00758f",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
-  },
-  [SkillNames.DJANGO]: {
-    id: 49,
-    name: "django",
-    label: "Django",
-    shortDescription: "batteries included, deadlines optional 🔋🐍",
-    color: "#fff",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg",
-  },
-  [SkillNames.FASTAPI]: {
-    id: 50,
-    name: "fastapi",
-    label: "FastAPI",
-    shortDescription: "async endpoints go zoom, it's giving speed 🚀🩵",
-    color: "#009688",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg",
-  },
-  [SkillNames.POSTGRES_ALT]: {
-    id: 51,
-    name: "postgre",
-    label: "PostgreSQL",
-    shortDescription: "SQL but make it fashion, purr 💅🐘",
-    color: "#336791",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
+    icon: "/assets/skills/linux.svg",
   },
   // --- Experience-section skills (colored devicon icons) ---
   [SkillNames.PYTHON]: {
-    id: 26,
     name: "python",
     label: "Python",
     shortDescription: "whitespace enforcement as a lifestyle, iykyk 🐍✨",
-    color: "#3776ab",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+    icon: "/assets/skills/python.svg",
   },
   [SkillNames.VITE]: {
-    id: 27,
     name: "vite",
     label: "Vite",
     shortDescription: "dev server so fast it hits different fr 🌩️⚡",
-    color: "#646cff",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vitejs/vitejs-original.svg",
+    icon: "/assets/skills/vitejs.svg",
   },
   [SkillNames.FRAMER_MOTION]: {
-    id: 28,
     name: "motion",
     label: "Framer Motion",
     shortDescription: "making divs do the most, respectfully 💃🎞️",
-    color: "#0055ff",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/framermotion/framermotion-original.svg",
+    icon: "/assets/skills/framermotion.svg",
   },
   [SkillNames.BIOME]: {
-    id: 29,
     name: "biome",
     label: "Biome",
     shortDescription: "lint and format said 'we one person now' 🌿💯",
-    color: "#60a5fa",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/biome/biome-original.svg",
+    icon: "/assets/skills/biome.svg",
   },
   [SkillNames.DIGITALOCEAN]: {
-    id: 30,
     name: "digitalocean",
     label: "DigitalOcean",
     shortDescription: "droplets on droplets, deploy and dip 🌊💧",
-    color: "#0080ff",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/digitalocean/digitalocean-original.svg",
+    icon: "/assets/skills/digitalocean.svg",
   },
   [SkillNames.NETLIFY]: {
-    id: 31,
     name: "netlify",
     label: "Netlify",
     shortDescription: "git push and it's live, no cap 🚀🟩",
-    color: "#00c7b7",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/netlify/netlify-original.svg",
+    icon: "/assets/skills/netlify.svg",
   },
   [SkillNames.MATPLOTLIB]: {
-    id: 32,
     name: "matplotlib",
     label: "Matplotlib",
     shortDescription: "turning arrays into art, deadass 📊🎨",
-    color: "#11557c",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/matplotlib/matplotlib-original.svg",
+    icon: "/assets/skills/matplotlib.svg",
   },
   [SkillNames.SCIKITLEARN]: {
-    id: 33,
     name: "scikit",
     label: "scikit-learn",
     shortDescription: "fit, predict, flex — the ML starter pack 🤖📈",
-    color: "#f89939",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg",
+    icon: "/assets/skills/scikitlearn.svg",
   },
   [SkillNames.PYTORCH]: {
-    id: 34,
     name: "pytorch",
     label: "PyTorch",
     shortDescription: "gradients descending, vibes ascending 🔥🧠",
-    color: "#ee4c2c",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg",
+    icon: "/assets/skills/pytorch.svg",
   },
   [SkillNames.TENSORFLOW]: {
-    id: 35,
     name: "tensorflow",
     label: "TensorFlow",
     shortDescription: "tensors flowing like it's nobody's business 🌊🧮",
-    color: "#ff6f00",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg",
+    icon: "/assets/skills/tensorflow.svg",
   },
   [SkillNames.JUPYTER]: {
-    id: 36,
     name: "jupyter",
     label: "Jupyter",
     shortDescription: "running cells out of order like a menace 📓🔀",
-    color: "#f37626",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jupyter/jupyter-original.svg",
+    icon: "/assets/skills/jupyter.svg",
   },
   [SkillNames.AZURE]: {
-    id: 37,
     name: "azure",
     label: "Azure",
     shortDescription: "the cloud that lives in the enterprise, period ☁️🟦",
-    color: "#0089d6",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg",
+    icon: "/assets/skills/azure.svg",
   },
   [SkillNames.ELASTICSEARCH]: {
-    id: 38,
     name: "elasticsearch",
     label: "Elasticsearch",
     shortDescription: "finding your logs faster than you lost them 🔎⚡",
-    color: "#005571",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/elasticsearch/elasticsearch-original.svg",
+    icon: "/assets/skills/elasticsearch.svg",
   },
   [SkillNames.LOGSTASH]: {
-    id: 39,
     name: "logstash",
     label: "Logstash",
     shortDescription: "the pipeline plumber for your data, fr 🚰📦",
-    color: "#00bfb3",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/logstash/logstash-original.svg",
+    icon: "/assets/skills/logstash.svg",
   },
   // --- Experience-section skills (local SVGs — no colored CDN icon available) ---
   [SkillNames.TURSO]: {
-    id: 42,
     name: "turso",
     label: "Turso",
     shortDescription: "edge databases living rent free 🐢⚡",
-    color: "#4ff8d2",
     icon: "/assets/skills/turso.png",
   },
   [SkillNames.QUALTRICS]: {
-    id: 43,
     name: "qualtrics",
     label: "Qualtrics",
     shortDescription: "surveys with a whole PhD behind them 📋🧪",
-    color: "#00b1e2",
     icon: "/assets/skills/qualtrics.png",
   },
   [SkillNames.POWERBI]: {
-    id: 45,
     name: "powerbi",
     label: "Power BI",
     shortDescription: "dashboards that make execs go 'ooooh' 📊💼",
-    color: "#f2c811",
     icon: "/assets/skills/powerbi.png",
   },
 };
@@ -370,7 +239,8 @@ export type Experience = {
   skills: SkillNames[];
 };
 
-// Company logos live in /assets/logos; skill pills resolve against SKILLS above.
+// Company logos live in /assets/logos; skill pills resolve against
+// EXPERIENCE_SKILLS above.
 export const EXPERIENCE: Experience[] = [
   {
     id: 1,

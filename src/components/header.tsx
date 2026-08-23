@@ -1,16 +1,12 @@
 "use client";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { config } from "@/data/config";
 import { cn } from "@/utils/utils";
 import ThemeToggle from "./theme-toggle";
 import { Button } from "./ui/button";
-import { config } from "@/data/config";
 
-interface HeaderProps {
-  loader?: boolean;
-}
-
-const Header = ({ loader }: HeaderProps) => {
+const Header = () => {
   return (
     <motion.header
       className={cn(
@@ -23,13 +19,12 @@ const Header = ({ loader }: HeaderProps) => {
         y: 0,
       }}
       transition={{
-        delay: loader ? 3.5 : 0, // 3.5 for loading, .5 can be added for delay
         duration: 0.8,
       }}
     >
       <div className="relative flex items-center justify-end text-xs font-normal lowercase sm:text-[15px]">
         <Link
-          href="/public"
+          href="/"
           className="absolute left-0 flex items-center justify-center text-foreground no-underline"
         >
           <Button variant={"link"} className="text-md">

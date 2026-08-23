@@ -1,9 +1,9 @@
 "use client";
 
-import { motion, useAnimation, useInView } from "motion/react";
-
+import { motion } from "motion/react";
+import { ReactNode } from "react";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/utils/utils";
-import { ReactNode, useEffect, useRef } from "react";
 
 interface BlurIntProps {
   children: ReactNode;
@@ -14,6 +14,10 @@ interface BlurIntProps {
     visible: { filter: string; opacity: number };
   };
   duration?: number;
+  // Lets a caller hold the element in its "hidden" state (e.g. while a
+  // full-screen preloader still masks it) instead of always animating in on
+  // mount, without unmounting it — so the markup stays in the SSR'd HTML.
+  animate?: "hidden" | "visible";
 }
 export const BlurIn = ({
   children,
@@ -21,7 +25,9 @@ export const BlurIn = ({
   variant,
   delay = 0,
   duration = 1,
+  animate = "visible",
 }: BlurIntProps) => {
+  const prefersReducedMotion = usePrefersReducedMotion();
   const defaultVariants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
     visible: { filter: "blur(0px)", opacity: 1 },
@@ -31,8 +37,11 @@ export const BlurIn = ({
   return (
     <motion.div
       initial="hidden"
-      animate="visible"
-      transition={{ duration, delay }}
+      animate={animate}
+      transition={{
+        duration: prefersReducedMotion ? 0 : duration,
+        delay: prefersReducedMotion ? 0 : delay,
+      }}
       variants={combinedVariants}
       className={cn(
         className,
@@ -60,32 +69,21 @@ export const BoxReveal = ({
   delay,
   once = true,
 }: BoxRevealProps) => {
-  const mainControls = useAnimation();
-  const slideControls = useAnimation();
-
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once });
-
-  useEffect(() => {
-    if (isInView) {
-      slideControls.start("visible");
-      mainControls.start("visible");
-    } else {
-      slideControls.start("hidden");
-      mainControls.start("hidden");
-    }
-  }, [isInView, mainControls, slideControls]);
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const effectiveDuration = prefersReducedMotion ? 0 : (duration ?? 0.5);
+  const effectiveDelay = prefersReducedMotion ? 0 : delay;
 
   return (
-    <div ref={ref} style={{ position: "relative", width, overflow: "hidden" }}>
+    <div style={{ position: "relative", width, overflow: "hidden" }}>
       <motion.div
         variants={{
           hidden: { opacity: 0, y: 75 },
           visible: { opacity: 1, y: 0 },
         }}
         initial="hidden"
-        animate={mainControls}
-        transition={{ duration: duration ? duration : 0.5, delay }}
+        whileInView="visible"
+        viewport={{ once }}
+        transition={{ duration: effectiveDuration, delay: effectiveDelay }}
       >
         {children}
       </motion.div>
@@ -96,11 +94,12 @@ export const BoxReveal = ({
           visible: { left: "100%" },
         }}
         initial="hidden"
-        animate={slideControls}
+        whileInView="visible"
+        viewport={{ once }}
         transition={{
-          duration: duration ? duration : 0.5,
+          duration: effectiveDuration,
           ease: "easeIn",
-          delay,
+          delay: effectiveDelay,
         }}
         style={{
           position: "absolute",

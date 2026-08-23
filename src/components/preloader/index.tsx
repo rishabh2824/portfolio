@@ -1,33 +1,28 @@
 "use client";
+import gsap from "gsap";
+import { AnimatePresence } from "motion/react";
+import { usePathname } from "next/navigation";
 import {
-  useState,
-  useEffect,
   createContext,
   ReactNode,
   useContext,
+  useEffect,
   useRef,
+  useState,
 } from "react";
-import { AnimatePresence } from "motion/react";
-import { usePathname } from "next/navigation";
-
 import Loader from "./loader";
-import gsap from "gsap";
 
 type PreloaderContextType = {
   isLoading: boolean;
   loadingPercent: number;
   bypassLoading: () => void;
 };
-const INITIAL: PreloaderContextType = {
-  isLoading: true,
-  loadingPercent: 0,
-  bypassLoading: () => {},
-};
-const preloaderContext = createContext<PreloaderContextType>(INITIAL);
+const preloaderContext = createContext<PreloaderContextType | undefined>(
+  undefined,
+);
 
 type PreloaderProps = {
   children: ReactNode;
-  disabled?: boolean;
 };
 
 export const usePreloader = () => {
@@ -38,10 +33,10 @@ export const usePreloader = () => {
   return context;
 };
 const LOADING_TIME = 2.5;
-function Preloader({ children, disabled = false }: PreloaderProps) {
+function Preloader({ children }: PreloaderProps) {
   const pathname = usePathname();
   // Skip the loading splash for the résumé route
-  const skip = disabled || pathname?.startsWith("/resume");
+  const skip = pathname?.startsWith("/resume");
 
   const [isLoading, setIsLoading] = useState(!skip);
   const [loadingPercent, setLoadingPercent] = useState(skip ? 100 : 0);

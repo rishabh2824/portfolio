@@ -1,17 +1,21 @@
 "use client";
-import React, { Suspense, useEffect, useRef, useState } from "react";
 import { Application, SplineEvent } from "@splinetool/runtime";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { Suspense, useEffect, useRef, useState } from "react";
+
 const Spline = React.lazy(() => import("@splinetool/react-spline"));
-import { Skill, SkillNames, SKILLS } from "@/data/constants";
-import { sleep } from "@/utils/utils";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { usePreloader } from "./preloader";
+
 import { useTheme } from "next-themes";
-import { Section, getKeyboardState } from "./animated-background-config";
-import { useSounds } from "@/hooks/use-sounds";
+import type { Skill, SkillNames } from "@/data/constants";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { SKILLS } from "@/data/keyboard-skills";
+import { usePauseOnHidden } from "@/hooks/use-pause-on-hidden";
 import { usePerfProfile } from "@/hooks/use-perf-profile";
+import { useSounds } from "@/hooks/use-sounds";
+import { sleep } from "@/utils/utils";
+import { getKeyboardState, Section } from "./animated-background-config";
+import { usePreloader } from "./preloader";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -46,6 +50,34 @@ function setSplineKeyboardText(
 ) {
   setSplineVariable(app, "heading", heading);
   setSplineVariable(app, "desc", desc);
+}
+
+type SplineObject = NonNullable<ReturnType<Application["findObjectByName"]>>;
+
+function animateKeyboardTo(
+  kbd: SplineObject,
+  section: Section,
+  isMobile: boolean,
+) {
+  const state = getKeyboardState({ section, isMobile });
+  gsap.to(kbd.scale, {
+    ...state.scale,
+    duration: 1,
+    ease: "power2.out",
+    overwrite: "auto",
+  });
+  gsap.to(kbd.position, {
+    ...state.position,
+    duration: 1,
+    ease: "power2.out",
+    overwrite: "auto",
+  });
+  gsap.to(kbd.rotation, {
+    ...state.rotation,
+    duration: 1,
+    ease: "power2.out",
+    overwrite: "auto",
+  });
 }
 
 const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
@@ -97,37 +129,6 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
     }
   };
 
-  const handleSplineInteractions = () => {
-    if (!splineApp) return;
-
-    const isInputFocused = () => {
-      const activeElement = document.activeElement;
-      return (
-        activeElement &&
-        (activeElement.tagName === "INPUT" ||
-          activeElement.tagName === "TEXTAREA" ||
-          (activeElement as HTMLElement).isContentEditable)
-      );
-    };
-
-    splineApp.addEventListener("keyUp", () => {
-      if (!splineApp || isInputFocused()) return;
-      playReleaseSound();
-      setSplineKeyboardText(splineApp, "", "");
-    });
-    splineApp.addEventListener("keyDown", (e) => {
-      if (!splineApp || isInputFocused()) return;
-      const skill = SKILLS[e.target.name as SkillNames];
-      if (skill) {
-        playPressSound();
-        setSelectedSkill(skill);
-        selectedSkillRef.current = skill;
-        setSplineKeyboardText(splineApp, skill.label, skill.shortDescription);
-      }
-    });
-    splineApp.addEventListener("mouseHover", handleMouseHover);
-  };
-
   // --- Animation Setup Helpers ---
 
   const createSectionTimeline = (
@@ -141,55 +142,21 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
     const kbd = splineApp.findObjectByName("keyboard");
     if (!kbd) return;
 
+    // No tweens are added to this timeline itself — the actual animation is
+    // the discrete onEnter/onLeaveBack state machine below, so there's
+    // nothing for `scrub` to scrub.
     return gsap.timeline({
       scrollTrigger: {
         trigger: triggerId,
         start,
         end,
-        scrub: true,
         onEnter: () => {
           setActiveSection(targetSection);
-          const state = getKeyboardState({ section: targetSection, isMobile });
-          gsap.to(kbd.scale, {
-            ...state.scale,
-            duration: 1,
-            ease: "power2.out",
-            overwrite: "auto",
-          });
-          gsap.to(kbd.position, {
-            ...state.position,
-            duration: 1,
-            ease: "power2.out",
-            overwrite: "auto",
-          });
-          gsap.to(kbd.rotation, {
-            ...state.rotation,
-            duration: 1,
-            ease: "power2.out",
-            overwrite: "auto",
-          });
+          animateKeyboardTo(kbd, targetSection, isMobile);
         },
         onLeaveBack: () => {
           setActiveSection(prevSection);
-          const state = getKeyboardState({ section: prevSection, isMobile });
-          gsap.to(kbd.scale, {
-            ...state.scale,
-            duration: 1,
-            ease: "power2.out",
-            overwrite: "auto",
-          });
-          gsap.to(kbd.position, {
-            ...state.position,
-            duration: 1,
-            ease: "power2.out",
-            overwrite: "auto",
-          });
-          gsap.to(kbd.rotation, {
-            ...state.rotation,
-            duration: 1,
-            ease: "power2.out",
-            overwrite: "auto",
-          });
+          animateKeyboardTo(kbd, prevSection, isMobile);
         },
       },
     });
@@ -249,6 +216,14 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
   const getKeycapsAnimation = () => {
     if (!splineApp) return { start: () => {}, stop: () => {} };
 
+    // Resolve each skill's keycap object once (same pattern as the bongo
+    // animation above) instead of re-running findObjectByName for every
+    // skill on every start()/stop() call — those fire on each section
+    // crossing while scrolling.
+    const keycaps = Object.values(SKILLS)
+      .map((skill) => splineApp.findObjectByName(skill.name))
+      .filter((keycap): keycap is NonNullable<typeof keycap> => !!keycap);
+
     let tweens: gsap.core.Tween[] = [];
     const removePrevTweens = () => {
       tweens.forEach((t) => t.kill());
@@ -257,11 +232,9 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
 
     const start = () => {
       removePrevTweens();
-      Object.values(SKILLS)
+      [...keycaps]
         .sort(() => Math.random() - 0.5)
-        .forEach((skill, idx) => {
-          const keycap = splineApp.findObjectByName(skill.name);
-          if (!keycap) return;
+        .forEach((keycap, idx) => {
           const t = gsap.to(keycap.position, {
             y: Math.random() * 200 + 200,
             duration: Math.random() * 2 + 2,
@@ -278,9 +251,7 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
 
     const stop = () => {
       removePrevTweens();
-      Object.values(SKILLS).forEach((skill) => {
-        const keycap = splineApp.findObjectByName(skill.name);
-        if (!keycap) return;
+      keycaps.forEach((keycap) => {
         const t = gsap.to(keycap.position, {
           y: 0,
           duration: 1.4,
@@ -346,10 +317,54 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
 
   // --- Effects ---
 
-  // Initialize GSAP and Spline interactions
+  // Register Spline keyboard/mouse interaction listeners once per app
+  // instance. Kept in its own effect (keyed on splineApp alone, not
+  // isMobile) so switching breakpoints doesn't re-run it and stack
+  // duplicate listeners on the long-lived splineApp.
   useEffect(() => {
     if (!splineApp) return;
-    handleSplineInteractions();
+
+    const isInputFocused = () => {
+      const activeElement = document.activeElement;
+      return (
+        activeElement &&
+        (activeElement.tagName === "INPUT" ||
+          activeElement.tagName === "TEXTAREA" ||
+          (activeElement as HTMLElement).isContentEditable)
+      );
+    };
+
+    const onKeyUp = () => {
+      if (isInputFocused()) return;
+      playReleaseSound();
+      setSplineKeyboardText(splineApp, "", "");
+    };
+
+    const onKeyDown = (e: SplineEvent) => {
+      if (isInputFocused()) return;
+      const skill = SKILLS[e.target.name as SkillNames];
+      if (skill) {
+        playPressSound();
+        setSelectedSkill(skill);
+        selectedSkillRef.current = skill;
+        setSplineKeyboardText(splineApp, skill.label, skill.shortDescription);
+      }
+    };
+
+    splineApp.addEventListener("keyUp", onKeyUp);
+    splineApp.addEventListener("keyDown", onKeyDown);
+    splineApp.addEventListener("mouseHover", handleMouseHover);
+
+    return () => {
+      splineApp.removeEventListener("keyUp", onKeyUp);
+      splineApp.removeEventListener("keyDown", onKeyDown);
+      splineApp.removeEventListener("mouseHover", handleMouseHover);
+    };
+  }, [splineApp]);
+
+  // Initialize GSAP animations
+  useEffect(() => {
+    if (!splineApp) return;
     const timelines = setupScrollAnimations();
     bongoAnimationRef.current = getBongoAnimation();
     keycapAnimationsRef.current = getKeycapsAnimation();
@@ -442,7 +457,6 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
         overwrite: "auto",
         paused: true, // Start paused
       });
-
     }
 
     const startExperienceKeyboardLoop = () => {
@@ -538,15 +552,10 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
   // bongo-cat interval, which are only visible through it) while the tab is
   // hidden. Spline keeps rendering at full tilt in a background tab otherwise —
   // a pointless, continuous GPU/battery drain.
-  useEffect(() => {
-    if (!splineApp) return;
-    const onVisibility = () => {
-      if (document.hidden) splineApp.stop();
-      else splineApp.play();
-    };
-    document.addEventListener("visibilitychange", onVisibility);
-    return () => document.removeEventListener("visibilitychange", onVisibility);
-  }, [splineApp]);
+  usePauseOnHidden(
+    () => splineApp?.stop(),
+    () => splineApp?.play(),
+  );
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -558,8 +567,7 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
           bypassLoading();
         }}
         // scene="/assets/skills-keyboard.spline"
-          scene="https://prod.spline.design/2tuMcvcNm5jiAsa6/scene.splinecode"
-
+        scene="https://prod.spline.design/2tuMcvcNm5jiAsa6/scene.splinecode"
       />
     </Suspense>
   );
@@ -601,8 +609,18 @@ function capSplinePixelRatio(app: Application, maxDpr: number) {
     }
   };
   apply();
-  window.addEventListener("resize", apply, { passive: true });
-  return () => window.removeEventListener("resize", apply);
+  // Cheap per call, but still no reason to run it dozens of times a second
+  // while a window edge is being dragged — settle on the final size.
+  let timeout: ReturnType<typeof setTimeout>;
+  const onResize = () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(apply, 150);
+  };
+  window.addEventListener("resize", onResize, { passive: true });
+  return () => {
+    clearTimeout(timeout);
+    window.removeEventListener("resize", onResize);
+  };
 }
 
 export default AnimatedBackground;
