@@ -2,7 +2,6 @@
 
 import { motion } from "motion/react";
 import { ReactNode } from "react";
-import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/utils/utils";
 
 interface BlurIntProps {
@@ -27,7 +26,6 @@ export const BlurIn = ({
   duration = 1,
   animate = "visible",
 }: BlurIntProps) => {
-  const prefersReducedMotion = usePrefersReducedMotion();
   const defaultVariants = {
     hidden: { filter: "blur(10px)", opacity: 0 },
     visible: { filter: "blur(0px)", opacity: 1 },
@@ -38,10 +36,7 @@ export const BlurIn = ({
     <motion.div
       initial="hidden"
       animate={animate}
-      transition={{
-        duration: prefersReducedMotion ? 0 : duration,
-        delay: prefersReducedMotion ? 0 : delay,
-      }}
+      transition={{ duration, delay }}
       variants={combinedVariants}
       className={cn(
         className,
@@ -60,6 +55,11 @@ interface BoxRevealProps {
   duration?: number;
   delay?: number;
   once?: boolean;
+  // Lets a caller drive the reveal directly off external state (e.g. a
+  // preloader's `isLoading`) instead of the default scroll-triggered
+  // `whileInView` — needed for content that's already on-screen at mount,
+  // where waiting on an IntersectionObserver crossing is unreliable.
+  animate?: "hidden" | "visible";
 }
 export const BoxReveal = ({
   children,
@@ -68,10 +68,14 @@ export const BoxReveal = ({
   duration,
   delay,
   once = true,
+  animate,
 }: BoxRevealProps) => {
-  const prefersReducedMotion = usePrefersReducedMotion();
-  const effectiveDuration = prefersReducedMotion ? 0 : (duration ?? 0.5);
-  const effectiveDelay = prefersReducedMotion ? 0 : delay;
+  const effectiveDuration = duration ?? 0.5;
+  const effectiveDelay = delay;
+  const triggerProps =
+    animate !== undefined
+      ? { animate }
+      : { whileInView: "visible" as const, viewport: { once } };
 
   return (
     <div style={{ position: "relative", width, overflow: "hidden" }}>
@@ -81,8 +85,7 @@ export const BoxReveal = ({
           visible: { opacity: 1, y: 0 },
         }}
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once }}
+        {...triggerProps}
         transition={{ duration: effectiveDuration, delay: effectiveDelay }}
       >
         {children}
@@ -94,8 +97,7 @@ export const BoxReveal = ({
           visible: { left: "100%" },
         }}
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once }}
+        {...triggerProps}
         transition={{
           duration: effectiveDuration,
           ease: "easeIn",

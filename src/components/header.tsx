@@ -3,7 +3,6 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { config } from "@/data/config";
 import { cn } from "@/utils/utils";
-import ThemeToggle from "./theme-toggle";
 import { Button } from "./ui/button";
 
 const Header = () => {
@@ -31,8 +30,6 @@ const Header = () => {
             {config.author}
           </Button>
         </Link>
-
-        <ThemeToggle className="w-6 h-6 hidden md:flex" />
       </div>
     </motion.header>
   );

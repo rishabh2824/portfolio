@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import { usePauseOnHidden } from "@/hooks/use-pause-on-hidden";
-import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/utils/utils";
 
 // Precomputed rgba strings bucketed by alpha (2 decimal places) so drawing a
@@ -58,17 +57,12 @@ export default function Particles({
     typeof window !== "undefined"
       ? Math.min(window.devicePixelRatio, maxDpr)
       : 1;
-  // A drifting, magnetism-chasing field of particles is pure motion with no
-  // informational content, so it's gated off entirely rather than just
-  // throttled — the field still renders once, statically, via initCanvas.
-  const prefersReducedMotion = usePrefersReducedMotion();
-
   useEffect(() => {
     if (canvasRef.current) {
       context.current = canvasRef.current.getContext("2d");
     }
     initCanvas();
-    if (!prefersReducedMotion) animate();
+    animate();
 
     // Dragging a window edge can fire resize dozens of times a second; each
     // one wipes and reallocates every circle, so settle on the final size
@@ -93,13 +87,11 @@ export default function Particles({
     };
     // Re-run whenever the adaptive-performance props change (e.g. crossing
     // the mobile breakpoint) instead of freezing them at mount.
-  }, [quantity, staticity, ease, maxDpr, prefersReducedMotion]);
+  }, [quantity, staticity, ease, maxDpr]);
 
   usePauseOnHidden(
     () => cancelAnimationFrame(rafId.current),
-    () => {
-      if (!prefersReducedMotion) animate();
-    },
+    () => animate(),
   );
 
   const initCanvas = () => {
@@ -141,10 +133,7 @@ export default function Particles({
     const translateY = 0;
     const size = Math.floor(Math.random() * 2) + 0.1;
     const targetAlpha = parseFloat((Math.random() * 0.6 + 0.1).toFixed(1));
-    // Normally starts transparent and fades in via the rAF loop's alpha
-    // ramp; with that loop gated off for reduced motion, start at the
-    // target alpha directly so the one-shot draw is actually visible.
-    const alpha = prefersReducedMotion ? targetAlpha : 0;
+    const alpha = 0;
     const dx = (Math.random() - 0.5) * 0.2;
     const dy = (Math.random() - 0.5) * 0.2;
     const magnetism = 0.1 + Math.random() * 4;
@@ -267,7 +256,7 @@ export default function Particles({
     <div
       className={cn(
         className,
-        "dark:bg-gradient-to-tl from-black via-zinc-600/20 to-black",
+        "bg-gradient-to-tl from-black via-zinc-600/20 to-black",
       )}
       ref={canvasContainerRef}
       aria-hidden="true"

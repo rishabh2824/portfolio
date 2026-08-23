@@ -1,7 +1,6 @@
 "use client";
 
 import { useLazyClientComponent } from "@/hooks/use-lazy-client-component";
-import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 
 /**
  * Lightweight stand-in for the WebGL scene. It occupies the same fixed,
@@ -26,12 +25,6 @@ function ScenePlaceholder() {
  * that static analysis, so the fetch is deferred along with the mount.
  */
 const AnimatedBackground = () => {
-  // The scene is pure motion — a WebGL render loop, infinite GSAP tweens, a
-  // rotating keyboard — with no informational content, so it's the single
-  // largest win available for prefers-reduced-motion: skip fetching and
-  // mounting it entirely rather than just disabling its animations.
-  const prefersReducedMotion = usePrefersReducedMotion();
-
   // Defer the heavy chunk *fetch* until the browser is idle, so it doesn't
   // compete with the hero hydrating/painting. This still fires well within the
   // preloader's ~2.5s masking window, so the scene loads behind the splash and
@@ -40,7 +33,7 @@ const AnimatedBackground = () => {
   // requestIdleCallback is unavailable (Safari).
   const Scene = useLazyClientComponent(
     () => import("./animated-background-scene"),
-    { skip: prefersReducedMotion, idle: true },
+    { idle: true },
   );
 
   if (!Scene) return <ScenePlaceholder />;

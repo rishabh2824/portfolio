@@ -22,7 +22,6 @@ A developer portfolio built with Next.js, React, TypeScript, Tailwind CSS, GSAP,
 | Styling | Tailwind CSS, Shadcn UI, Aceternity UI |
 | Animation | GSAP, Motion |
 | 3D | Spline Runtime |
-| Misc | next-themes |
 
 ## Getting Started
 

@@ -13,7 +13,7 @@ import { Button } from "../ui/button";
 import SectionWrapper from "../ui/section-wrapper";
 
 const heroSubtextClassName =
-  "font-thin text-md text-slate-500 dark:text-zinc-400 cursor-default font-display sm:text-xl md:text-xl whitespace-nowrap";
+  "font-thin text-md text-zinc-400 cursor-default font-display sm:text-xl md:text-xl whitespace-nowrap";
 
 const HeroSection = () => {
   const { isLoading } = usePreloader();
@@ -68,37 +68,37 @@ const HeroSection = () => {
                 </p>
               </BlurIn>
             </div>
-            <div className="mt-8 flex flex-col gap-3 w-fit">
-              <Link href="/resume" className="flex-1">
-                <BoxReveal delay={2} width="100%">
-                  <Button className="flex items-center gap-2 w-full">
+            <div className="mt-8 flex items-center gap-3 w-fit">
+              <Link href="/resume">
+                <BoxReveal
+                  delay={2}
+                  width="100%"
+                  animate={isLoading ? "hidden" : "visible"}
+                >
+                  <Button className="flex items-center gap-2">
                     <File size={24} />
                     <p>Resume</p>
                   </Button>
                 </BoxReveal>
               </Link>
-              <div className="md:self-start flex gap-3">
-                <div className="flex items-center h-full gap-2">
-                  <Link
-                    href={config.social.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button variant={"outline"} aria-label="GitHub profile">
-                      <FaGithub size={24} aria-hidden="true" />
-                    </Button>
-                  </Link>
-                  <Link
-                    href={config.social.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button variant={"outline"} aria-label="LinkedIn profile">
-                      <FaLinkedinIn size={24} aria-hidden="true" />
-                    </Button>
-                  </Link>
-                </div>
-              </div>
+              <Link
+                href={config.social.github}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button variant={"outline"} aria-label="GitHub profile">
+                  <FaGithub size={24} aria-hidden="true" />
+                </Button>
+              </Link>
+              <Link
+                href={config.social.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button variant={"outline"} aria-label="LinkedIn profile">
+                  <FaLinkedinIn size={24} aria-hidden="true" />
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

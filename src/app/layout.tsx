@@ -50,7 +50,6 @@ export default function RootLayout({
       className={[inter.variable, archivoBlack.variable, "font-display"].join(
         " ",
       )}
-      suppressHydrationWarning
     >
       <head>
         {/* The Spline runtime lazy-loads its wasm from unpkg; warm the

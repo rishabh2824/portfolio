@@ -1,5 +1,5 @@
 const config = {
-  title: "Rishabh Jain | An Aspiring Software Developer",
+  title: "Rishabh Jain | Portfolio",
   description: {
     long: "Explore the portfolio of Rishabh Jain, an aspiring software developer pursuing his Master's in computer science at University of Wisconsin-Madison.",
     short:

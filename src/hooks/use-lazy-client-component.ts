@@ -3,8 +3,6 @@
 import { useEffect, useState, type ComponentType } from "react";
 
 interface UseLazyClientComponentOptions {
-  /** Skip loading entirely (e.g. prefers-reduced-motion gating a pure-motion scene). */
-  skip?: boolean;
   /** Defer the import itself until the browser is idle instead of firing immediately. */
   idle?: boolean;
   /** requestIdleCallback timeout / setTimeout fallback delay, in ms. */
@@ -22,17 +20,11 @@ interface UseLazyClientComponentOptions {
  */
 export function useLazyClientComponent<P extends object>(
   importFn: () => Promise<{ default: ComponentType<P> }>,
-  {
-    skip = false,
-    idle = false,
-    idleTimeout = 1500,
-  }: UseLazyClientComponentOptions = {},
+  { idle = false, idleTimeout = 1500 }: UseLazyClientComponentOptions = {},
 ) {
   const [Component, setComponent] = useState<ComponentType<P> | null>(null);
 
   useEffect(() => {
-    if (skip) return;
-
     let idleId: number | undefined;
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
     let cancelled = false;
@@ -56,7 +48,7 @@ export function useLazyClientComponent<P extends object>(
       if (idleId !== undefined) window.cancelIdleCallback?.(idleId);
       if (timeoutId !== undefined) clearTimeout(timeoutId);
     };
-  }, [skip, idle, idleTimeout, importFn]);
+  }, [idle, idleTimeout, importFn]);
 
   return Component;
 }

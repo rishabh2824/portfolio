@@ -1,24 +1,15 @@
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
-import { motion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { cn } from "@/utils/utils";
 import { Button } from "./ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "./ui/dialog";
 
 const SlideShow = ({ images }: { images: string[] }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "center",
     loop: images.length > 1,
   });
-  const [selectedImage, setSelectedImage] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   // Bumped by every manual navigation so the autoplay effect below tears
@@ -59,136 +50,96 @@ const SlideShow = ({ images }: { images: string[] }) => {
   }, [emblaApi]);
 
   useEffect(() => {
-    if (!emblaApi || images.length <= 1 || selectedImage || isPaused) return;
+    if (!emblaApi || images.length <= 1 || isPaused) return;
 
     const interval = window.setInterval(() => {
       emblaApi.scrollNext();
     }, 3500);
 
     return () => window.clearInterval(interval);
-  }, [emblaApi, images.length, selectedImage, isPaused, autoplayTick]);
+  }, [emblaApi, images.length, isPaused, autoplayTick]);
 
   return (
-    <>
-      <div
-        className="relative"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-        onFocus={() => setIsPaused(true)}
-        onBlur={() => setIsPaused(false)}
-      >
-        <div className="overflow-hidden px-12" ref={emblaRef}>
-          <div className="flex gap-4">
-            {images.map((image, idx) => (
-              <div key={`${image}-${idx}`} className="min-w-0 flex-[0_0_100%]">
-                <motion.button
-                  className="relative block aspect-video w-full cursor-zoom-in overflow-hidden rounded-lg bg-muted/30"
-                  onClick={() => {
-                    setSelectedImage(image);
-                  }}
-                  initial="idle"
-                  whileHover="hover"
-                  whileFocus="hover"
-                >
-                  <Image
-                    src={image}
-                    alt="screenshot"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 800px"
-                    className="object-contain"
-                  />
-                  <motion.div
-                    className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/40 text-sm text-white/90 backdrop-blur-[2px]"
-                    variants={{
-                      idle: { opacity: 0 },
-                      hover: { opacity: 1 },
-                    }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    Click to zoom
-                  </motion.div>
-                </motion.button>
+    <div
+      className="relative"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onFocus={() => setIsPaused(true)}
+      onBlur={() => setIsPaused(false)}
+    >
+      <div className="overflow-hidden px-12" ref={emblaRef}>
+        <div className="flex gap-4">
+          {images.map((image, idx) => (
+            <div key={`${image}-${idx}`} className="min-w-0 flex-[0_0_100%]">
+              <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted/30">
+                <Image
+                  src={image}
+                  alt="screenshot"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 800px"
+                  className="object-contain"
+                />
               </div>
-            ))}
-          </div>
-        </div>
-
-        {images.length > 1 && (
-          <>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              aria-label="Previous screenshot"
-              onClick={scrollPrev}
-              className="absolute left-0 top-1/2 size-9 -translate-y-1/2 rounded-full bg-background/80 backdrop-blur"
-            >
-              <ChevronLeft className="size-4" />
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              aria-label="Next screenshot"
-              onClick={scrollNext}
-              className="absolute right-0 top-1/2 size-9 -translate-y-1/2 rounded-full bg-background/80 backdrop-blur"
-            >
-              <ChevronRight className="size-4" />
-            </Button>
-            <div className="mt-4 flex items-center justify-center gap-3">
-              <div className="flex gap-2">
-                {images.map((image, idx) => (
-                  <button
-                    key={`dot-${image}-${idx}`}
-                    type="button"
-                    aria-label={`Go to screenshot ${idx + 1}`}
-                    onClick={() => scrollTo(idx)}
-                    className={cn(
-                      "size-2 rounded-full bg-muted-foreground/40 transition-colors",
-                      selectedIndex === idx && "bg-foreground",
-                    )}
-                  />
-                ))}
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                aria-label={isPaused ? "Play slideshow" : "Pause slideshow"}
-                onClick={() => setIsPaused((p) => !p)}
-                className="size-6 rounded-full"
-              >
-                {isPaused ? (
-                  <Play className="size-3" />
-                ) : (
-                  <Pause className="size-3" />
-                )}
-              </Button>
             </div>
-          </>
-        )}
+          ))}
+        </div>
       </div>
-      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage("")}>
-        <DialogContent
-          className="max-w-[90vw] max-h-[90vh] p-0 border-none bg-transparent"
-          onClick={() => setSelectedImage("")}
-        >
-          <DialogHeader className="sr-only">
-            <DialogTitle>Screenshot</DialogTitle>
-            <DialogDescription>Zoomed screenshot</DialogDescription>
-          </DialogHeader>
-          <motion.div>
-            <Image
-              src={selectedImage || ""}
-              alt="screenshot"
-              width={1080}
-              height={1080}
-              className="h-auto max-h-[90vh] w-full rounded-lg"
-            />
-          </motion.div>
-        </DialogContent>
-      </Dialog>
-    </>
+
+      {images.length > 1 && (
+        <>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            aria-label="Previous screenshot"
+            onClick={scrollPrev}
+            className="absolute left-0 top-1/2 size-9 -translate-y-1/2 rounded-full bg-background/80 backdrop-blur"
+          >
+            <ChevronLeft className="size-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            aria-label="Next screenshot"
+            onClick={scrollNext}
+            className="absolute right-0 top-1/2 size-9 -translate-y-1/2 rounded-full bg-background/80 backdrop-blur"
+          >
+            <ChevronRight className="size-4" />
+          </Button>
+          <div className="mt-4 flex items-center justify-center gap-3">
+            <div className="flex gap-2">
+              {images.map((image, idx) => (
+                <button
+                  key={`dot-${image}-${idx}`}
+                  type="button"
+                  aria-label={`Go to screenshot ${idx + 1}`}
+                  onClick={() => scrollTo(idx)}
+                  className={cn(
+                    "size-2 rounded-full bg-muted-foreground/40 transition-colors",
+                    selectedIndex === idx && "bg-foreground",
+                  )}
+                />
+              ))}
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              aria-label={isPaused ? "Play slideshow" : "Pause slideshow"}
+              onClick={() => setIsPaused((p) => !p)}
+              className="size-6 rounded-full"
+            >
+              {isPaused ? (
+                <Play className="size-3" />
+              ) : (
+                <Pause className="size-3" />
+              )}
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 export default SlideShow;

@@ -6,7 +6,6 @@ import React, { Suspense, useEffect, useRef, useState } from "react";
 
 const Spline = React.lazy(() => import("@splinetool/react-spline"));
 
-import { useTheme } from "next-themes";
 import type { Skill, SkillNames } from "@/data/constants";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { SKILLS } from "@/data/keyboard-skills";
@@ -82,7 +81,6 @@ function animateKeyboardTo(
 
 const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
   const { isLoading, bypassLoading } = usePreloader();
-  const { theme } = useTheme();
   const isMobile = useMediaQuery("(max-width: 767px)");
   const splineContainer = useRef<HTMLDivElement>(null);
   const [splineApp, setSplineApp] = useState<Application>();
@@ -381,7 +379,7 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
     };
   }, [splineApp, isMobile]);
 
-  // Handle keyboard text visibility based on theme and section
+  // Handle keyboard text visibility based on section
   useEffect(() => {
     if (!splineApp) return;
     const textDesktopDark = splineApp.findObjectByName("text-desktop-dark");
@@ -411,20 +409,12 @@ const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
 
     if (activeSection !== "skills") {
       setVisibility(false, false, false, false);
-    } else if (theme === "dark") {
-      if (isMobile) {
-        setVisibility(false, false, false, true);
-      } else {
-        setVisibility(false, true, false, false);
-      }
+    } else if (isMobile) {
+      setVisibility(false, false, false, true);
     } else {
-      if (isMobile) {
-        setVisibility(false, false, true, false);
-      } else {
-        setVisibility(true, false, false, false);
-      }
+      setVisibility(false, true, false, false);
     }
-  }, [theme, splineApp, isMobile, activeSection]);
+  }, [splineApp, isMobile, activeSection]);
 
   useEffect(() => {
     if (!selectedSkill || !splineApp) return;

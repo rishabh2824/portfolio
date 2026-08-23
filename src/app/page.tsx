@@ -8,7 +8,7 @@ function MainPage() {
   return (
     <>
       <AnimatedBackground />
-      <main className="pointer-events-none bg-slate-100 dark:bg-transparent [&_:is(a,button,h1,h2,h3,h4,h5,h6,p,select,span,svg,input,textarea,label,img,[role=button])]:pointer-events-auto">
+      <main className="pointer-events-none bg-transparent [&_:is(a,button,h1,h2,h3,h4,h5,h6,p,select,span,svg,input,textarea,label,img,[role=button])]:pointer-events-auto">
         <HeroSection />
         <SkillsSection />
         <ExperienceSection />
