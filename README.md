@@ -1,27 +1,28 @@
 # 3D Portfolio
 
-A developer portfolio built with Next.js, React, TypeScript, Tailwind CSS, GSAP, Motion, and Spline. It includes an interactive 3D keyboard, smooth scroll-driven animations, theme switching, project details, and a resume page.
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/rishabh2824/portfolio)
+A developer portfolio built with Next.js, React, TypeScript, Tailwind CSS, GSAP, Motion, and Spline. It includes an interactive 3D keyboard, smooth scroll-driven animations, project detail dialogs, and a resume page — statically exported and served by Convex.
 
 ## Features
 
-- Interactive 3D keyboard with skill keycaps
-- GSAP and Motion animations
-- Particle background and decorative cursor effects
-- Light and dark mode
-- Responsive layout
-- Project detail dialogs
-- Resume page
+- Interactive 3D keyboard with skill keycaps (Spline)
+- GSAP and Motion animations, including scroll-triggered reveals
+- Particle background, adaptive to device performance
+- Project detail dialogs with tech-stack pills and screenshot carousels
+- Resume page with an embedded, downloadable PDF
+- Nyan Cat easter egg
 
 ## Tech Stack
 
 | Layer | Technologies |
 |---|---|
-| Framework | Next.js 16, React 19, TypeScript |
+| Framework | Next.js 16 (static export), React 19, TypeScript |
 | Styling | Tailwind CSS, Shadcn UI, Aceternity UI |
 | Animation | GSAP, Motion |
 | 3D | Spline Runtime |
+| Carousel | Embla Carousel |
+| Backend / Hosting | Convex, `@convex-dev/static-hosting` |
+| Analytics | Google Analytics (`@next/third-parties`), optional |
+| Tooling | pnpm, Biome (lint/format), ESLint (`eslint-plugin-react-hooks`) |
 
 ## Getting Started
 
@@ -29,6 +30,7 @@ A developer portfolio built with Next.js, React, TypeScript, Tailwind CSS, GSAP,
 
 - Node.js 20+
 - pnpm
+- A [Convex](https://convex.dev) account (free tier is enough)
 
 ### Installation
 
@@ -45,86 +47,53 @@ A developer portfolio built with Next.js, React, TypeScript, Tailwind CSS, GSAP,
    pnpm install
    ```
 
-3. Run the development server:
+   This also applies the patch in `patches/` — see [Dependency patch](#dependency-patch) below.
+
+3. Link a Convex deployment (creates `.env.local` with `CONVEX_DEPLOYMENT`, `NEXT_PUBLIC_CONVEX_URL`, and `NEXT_PUBLIC_CONVEX_SITE_URL`):
+
+   ```bash
+   npx convex dev --once
+   ```
+
+4. Run the dev server:
 
    ```bash
    pnpm dev
    ```
 
-4. Open [http://localhost:3000](http://localhost:3000).
+5. Open [http://localhost:3000](http://localhost:3000).
 
-## Customization
+Optional: set `NEXT_PUBLIC_GA_ID` in `.env.local` to enable Google Analytics — it's skipped entirely if unset.
 
-Most personal information is centralized in [`src/data/config.ts`](src/data/config.ts):
+## Scripts
 
-```ts
-const config = {
-  title: "Your Name | Your Title",
-  description: {
-    long: "Your long description for SEO...",
-    short: "Your short description...",
-  },
-  author: "Your Name",
-  role: "Your Title",
-  site: "https://yoursite.com",
-  social: {
-    linkedin: "https://linkedin.com/in/you",
-    github: "https://github.com/you",
-  },
-};
-```
-
-`site` must be your real production domain before you deploy — it's used to
-build the absolute URLs in `metadataBase`, `robots.ts`, and `sitemap.ts`
-(social previews and search engines both need absolute, not relative, URLs).
-
-Other files you may want to customize:
-
-| File | What to change |
+| Command | Description |
 |---|---|
-| `src/data/projects.tsx` | Project tiles — title, category, screenshot, links. The `id` of each entry must have a matching key in `src/data/project-details.tsx` |
-| `src/data/project-details.tsx` | Per-project tech stack and write-up shown in the modal |
-| `src/data/constants.ts` | Work experience and the skills shown on the experience timeline |
-| `src/data/keyboard-skills.ts` | The keycap-only skills that appear exclusively on the 3D keyboard |
-| `public/assets/` | Project screenshots, logos, and skill icons |
-
-## Updating The 3D Keyboard Skills
-
-The 3D keyboard scene is hosted on Spline's CDN (see the `scene` prop in
-[`src/components/animated-background-scene.tsx`](src/components/animated-background-scene.tsx)),
-not loaded from a local file. To update the skills displayed on the keyboard:
-
-1. Open the scene in [Spline](https://spline.design/) (get edit access to the
-   hosted project, or start from your own scene and update the `scene` URL).
-2. Unhide the keycap objects you want to edit and update their logo images.
-3. Rename each keycap object to match a `SkillNames` enum value in
-   `src/data/constants.ts`.
-4. Hide the keycap objects again and re-publish the scene.
-
-Then make sure every keycap name has a matching entry in either
-`EXPERIENCE_SKILLS` (`src/data/constants.ts`, for skills also shown on the
-experience timeline) or `KEYBOARD_ONLY_SKILLS` (`src/data/keyboard-skills.ts`,
-for skills that only appear on the keyboard) — the two are merged into the
-`SKILLS` lookup that `animated-background-scene.tsx` resolves clicked/hovered
-keycaps against:
-
-```ts
-// src/data/constants.ts
-export const EXPERIENCE_SKILLS: Partial<Record<SkillNames, Skill>> = {
-  [SkillNames.JS]: { name: "js", label: "JavaScript", shortDescription: "...", icon: "..." },
-};
-```
-
-The `SkillNames` enum, the two skill records, and the Spline keycap names must stay in sync.
+| `pnpm dev` | Start the Next.js dev server |
+| `pnpm build` | Static-export the site to `out/` (`next build` under the hood) |
+| `pnpm start` | Serve the built `out/` folder locally, for a pre-deploy sanity check |
+| `pnpm run deploy` | Upload `out/` to the Convex static-hosting deployment |
+| `pnpm lint` | Biome lint |
+| `pnpm run lint:react` | ESLint (React Hooks / Compiler rules) |
+| `pnpm run format` | Biome format, writes changes |
+| `pnpm run format:check` | Biome format, check only |
 
 ## Deployment
 
-This site is ready for Vercel deployment:
+This project deploys to [Convex static hosting](https://github.com/get-convex/static-hosting), not Vercel — `next.config.mjs` sets `output: "export"` specifically so the whole site can ship as static files with no Next.js server at runtime.
 
-1. Push your code to GitHub.
-2. Connect the repository to [Vercel](https://vercel.com).
-3. Deploy.
+```bash
+pnpm run build && pnpm run deploy
+```
 
-## License
+Always run both together: `deploy` only uploads whatever is currently in `out/`, it does not build first.
 
-This project is open source and available under the [MIT License](LICENSE).
+The custom domain sits behind Cloudflare. Non-hashed static files (e.g. `Resume.pdf`, `robots.txt`, `sitemap.xml`) can get cached at Cloudflare's edge past what the origin's own `Cache-Control` intends — after deploying a change to one of those, purge it in the Cloudflare dashboard (Caching → Configuration → Purge Everything, or a custom purge for the specific URL) if it doesn't show up right away.
+
+### Dependency patch
+
+`patches/@convex-dev__static-hosting.patch` (applied automatically via `pnpm-workspace.yaml`'s `patchedDependencies`) adds `.pdf` to the package's MIME type table. Upstream doesn't map it, so `Resume.pdf` was served as `application/octet-stream` — browsers can't render that inline, so they silently downloaded the file instead of showing it on `/resume`. Drop the patch once upstream ships a fix.
+
+### Project screenshots
+
+Screenshot masters live in `assets-src/`, not `public/` — see [assets-src/README.md](assets-src/README.md). Only the optimized WebP output is deployed; `output: "export"` disables Next's image optimizer, so anything left in `public/` ships to visitors byte-for-byte.

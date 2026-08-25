@@ -252,8 +252,7 @@ export const EXPERIENCE: Experience[] = [
     description: [
       "Engineered a Qualtrics-integrated AI agent to execute shape generation and selection tasks from user prompts for 100+ participants.",
       "Built a low-latency Python, LLM, and JavaScript pipeline to translate natural language into geometric actions for performance scoring.",
-      "Developed a multi-agent case simulation platform supporting 40+ concurrent students, 8+ role-based personas, and 12+ case studies, enabling students to interview stakeholders, unlock case files, and gather evidence for business recommendations.",
-      "Built persona referral, document retrieval, and LLM-based report grading workflows to evaluate student submissions with automated feedback.",
+      "Designed a platform for 30+ PhD students to generate demographic-conditioned LLM survey responses, supporting rapid experimentation. Reduced time and costs spent on questionnaire testing by up to 60%.",
     ],
     skills: [
       SkillNames.PYTHON,
@@ -279,7 +278,7 @@ export const EXPERIENCE: Experience[] = [
     description: [
       "Collaborated with other interns to design and develop the company website with 50+ responsive UI pages and 20+ custom animations.",
       "Integrated backend APIs to build dynamic blog and news pages, and developed an admin panel for real-time content management.",
-      "Boosted page load speed by 18% through lazy loading and memoization in React. Built using the MERN stack.",
+      "Integrated an AI chat bot for instant answers and 24/7 support, improving engagement by 23%. Built using the MERN stack.",
     ],
     skills: [
       SkillNames.TS,

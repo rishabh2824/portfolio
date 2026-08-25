@@ -1,15 +1,12 @@
 "use client";
-import { ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { ProjectDetails } from "@/data/project-details";
 import projects, { type Project, type ProjectId } from "@/data/projects";
 import { useDocumentHidden, useInViewport } from "@/hooks/use-in-viewport";
 import { cn } from "@/utils/utils";
 import BorderGlow from "../ui/border-glow";
-import { Button } from "../ui/button";
 import { FloatingDock } from "../ui/floating-dock";
 import {
   ResponsiveDialog,
@@ -148,31 +145,6 @@ const BentoTile = ({
                 <span className="shrink-0 text-[11px] uppercase tracking-widest text-muted-foreground border border-border rounded-full px-3 py-0.5">
                   {project.category}
                 </span>
-              </div>
-              <div className="shrink-0 flex items-center gap-4">
-                {project.github && project.showSource !== false && (
-                  <Link
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
-                  >
-                    Source
-                  </Link>
-                )}
-                <Button
-                  asChild
-                  className="group h-auto gap-2 rounded-full px-4 py-1.5 hover:bg-primary/80"
-                >
-                  <Link
-                    href={project.live}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Visit
-                    <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </Link>
-                </Button>
               </div>
             </div>
           </div>

@@ -15,14 +15,16 @@
       "!build",
       "!public",
       "!next-env.d.ts",
-      "!pnpm-lock.yaml"
+      "!pnpm-lock.yaml",
+      "!convex/_generated"
     ]
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 80
+    "lineWidth": 80,
+    "lineEnding": "crlf"
   },
   "javascript": {
     "formatter": {

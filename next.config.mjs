@@ -5,23 +5,13 @@ const nextConfig = {
   reactCompiler: true,
 
   pageExtensions: ["js", "jsx", "ts", "tsx"],
-  async headers() {
-    return [
-      {
-        source: "/(.*)",
-        headers: [
-          // SAMEORIGIN (not DENY) so the resume page can embed its own PDF;
-          // still blocks other sites from framing us (clickjacking protection).
-          { key: "X-Frame-Options", value: "SAMEORIGIN" },
-          { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          {
-            key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
-          },
-        ],
-      },
-    ];
+  // Static export for Convex static-hosting: no Next.js server at runtime,
+  // so `headers()`/middleware/API routes aren't available (headers() was
+  // removed — see the deploy notes for the security-header tradeoff), and
+  // next/image needs its optimizer disabled since there's no server to run it.
+  output: "export",
+  images: {
+    unoptimized: true,
   },
 };
 

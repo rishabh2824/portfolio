@@ -7,11 +7,10 @@ const config = {
   },
   author: "Rishabh Jain",
   role: "An Aspiring Software Developer",
-  // Not deployed yet — swap for the real production domain (used by
-  // metadataBase, robots.ts, and sitemap.ts to build absolute URLs) before
-  // going live. ".example" is the IANA-reserved placeholder TLD, so this
-  // can never resolve to a real, possibly unrelated site in the meantime.
-  site: "https://rishabhjain.example",
+  // Production domain. Used by metadataBase, robots.ts, and sitemap.ts to
+  // build the absolute URLs crawlers see — keep it in sync with the domain
+  // actually serving the site, or search engines index a host that 404s.
+  site: "https://rishabhportflio.com",
   social: {
     linkedin: "https://www.linkedin.com/in/rishabhjain2824/",
     github: "https://github.com/rishabh2824",

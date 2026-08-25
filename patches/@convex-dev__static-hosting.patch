@@ -1,0 +1,48 @@
+diff --git a/dist/cli/upload.js b/dist/cli/upload.js
+index c56bea2295e25496a1f89abcc6c48e94754a8fb3..0ccb02ff696b17fd647fde28c1d45b0b12fc2afc 100644
+--- a/dist/cli/upload.js
++++ b/dist/cli/upload.js
+@@ -45,6 +45,7 @@ const MIME_TYPES = {
+     ".map": "application/json",
+     ".webmanifest": "application/manifest+json",
+     ".xml": "application/xml",
++    ".pdf": "application/pdf",
+ };
+ function getMimeType(path) {
+     return MIME_TYPES[extname(path).toLowerCase()] || "application/octet-stream";
+diff --git a/dist/component/serving.js b/dist/component/serving.js
+index 34ddd843c25bf0d2e5f2fbef8a883bc3d4e8e8ce..99aa15d55998eae52f1c308e65d84ed930034568 100644
+--- a/dist/component/serving.js
++++ b/dist/component/serving.js
+@@ -21,6 +21,7 @@ const MIME_TYPES = {
+     ".map": "application/json",
+     ".webmanifest": "application/manifest+json",
+     ".xml": "application/xml",
++    ".pdf": "application/pdf",
+ };
+ export function getSetupHtml() {
+     return `<!DOCTYPE html>
+diff --git a/src/cli/upload.ts b/src/cli/upload.ts
+index 9c2f9c1fccedb954b845c7599a2e8d5d132c0087..1631979d62c03b4b70bb0616e3a52c340419197a 100644
+--- a/src/cli/upload.ts
++++ b/src/cli/upload.ts
+@@ -54,6 +54,7 @@ const MIME_TYPES: Record<string, string> = {
+   ".map": "application/json",
+   ".webmanifest": "application/manifest+json",
+   ".xml": "application/xml",
++  ".pdf": "application/pdf",
+ };
+ 
+ function getMimeType(path: string): string {
+diff --git a/src/component/serving.ts b/src/component/serving.ts
+index 66c6d6c0edbcd8063ce72beb4d3a0bdf113909e5..a42420db326469e7c07f1fa8b0a3715a8f15f3f5 100644
+--- a/src/component/serving.ts
++++ b/src/component/serving.ts
+@@ -22,6 +22,7 @@ const MIME_TYPES: Record<string, string> = {
+   ".map": "application/json",
+   ".webmanifest": "application/manifest+json",
+   ".xml": "application/xml",
++  ".pdf": "application/pdf",
+ };
+ 
+ export function getSetupHtml(): string {

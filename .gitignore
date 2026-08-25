@@ -34,6 +34,14 @@ yarn-error.log*
 # vercel
 .vercel
 
+# AI tooling (installed/generated locally, not project code)
+.agents/
+.claude/skills/
+.claude/settings.local.json
+skills-lock.json
+AGENTS.md
+CLAUDE.md
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

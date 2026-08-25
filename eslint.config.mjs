@@ -16,5 +16,12 @@ export default defineConfig([
   },
 
   // 3. Keep your directory patterns clean and ignored
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    // Convex codegen output — not ours to lint or fix.
+    "convex/_generated/**",
+  ]),
 ]);

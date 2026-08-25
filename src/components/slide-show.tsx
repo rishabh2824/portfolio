@@ -1,5 +1,5 @@
 import useEmblaCarousel from "embla-carousel-react";
-import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { cn } from "@/utils/utils";
@@ -107,35 +107,19 @@ const SlideShow = ({ images }: { images: string[] }) => {
           >
             <ChevronRight className="size-4" />
           </Button>
-          <div className="mt-4 flex items-center justify-center gap-3">
-            <div className="flex gap-2">
-              {images.map((image, idx) => (
-                <button
-                  key={`dot-${image}-${idx}`}
-                  type="button"
-                  aria-label={`Go to screenshot ${idx + 1}`}
-                  onClick={() => scrollTo(idx)}
-                  className={cn(
-                    "size-2 rounded-full bg-muted-foreground/40 transition-colors",
-                    selectedIndex === idx && "bg-foreground",
-                  )}
-                />
-              ))}
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              aria-label={isPaused ? "Play slideshow" : "Pause slideshow"}
-              onClick={() => setIsPaused((p) => !p)}
-              className="size-6 rounded-full"
-            >
-              {isPaused ? (
-                <Play className="size-3" />
-              ) : (
-                <Pause className="size-3" />
-              )}
-            </Button>
+          <div className="mt-4 flex items-center justify-center gap-2">
+            {images.map((image, idx) => (
+              <button
+                key={`dot-${image}-${idx}`}
+                type="button"
+                aria-label={`Go to screenshot ${idx + 1}`}
+                onClick={() => scrollTo(idx)}
+                className={cn(
+                  "size-2 rounded-full bg-muted-foreground/40 transition-colors",
+                  selectedIndex === idx && "bg-foreground",
+                )}
+              />
+            ))}
           </div>
         </>
       )}
