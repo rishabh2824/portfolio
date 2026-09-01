@@ -250,9 +250,9 @@ export const EXPERIENCE: Experience[] = [
     company: "Wisconsin School of Business",
     logo: "/assets/logos/wisconsin.png",
     description: [
-      "Engineered a Qualtrics-integrated AI agent to execute shape generation and selection tasks from user prompts for 100+ participants.",
-      "Built a low-latency Python, LLM, and JavaScript pipeline to translate natural language into geometric actions for performance scoring.",
-      "Designed a platform for 30+ PhD students to generate demographic-conditioned LLM survey responses, supporting rapid experimentation. Reduced time and costs spent on questionnaire testing by up to 60%.",
+      "Engineered a Python web service embedded directly in the Qualtrics survey flow for a visual/spatial reasoning study: after observing which shape properties (color, sides, patterns) scored above a pass threshold, 100+ participants wrote natural-language prompts instructing an LLM agent to select shapes on their behalf.",
+      "Built a low-latency Python, LLM, and JavaScript pipeline connecting the agent to the survey, translating each prompt into shape selections and scoring them against the passing criteria to measure how well participants had learned and communicated the pattern.",
+      "Designed a platform for 30+ PhD students to generate synthetic survey responses from LLMs conditioned on demographic profiles, letting them pilot-test questionnaires before fielding them to real participants. Reduced time and costs spent on questionnaire testing by up to 60%.",
     ],
     skills: [
       SkillNames.PYTHON,
@@ -276,9 +276,9 @@ export const EXPERIENCE: Experience[] = [
     company: "ai-horizon.io",
     logo: "/assets/logos/horizon.png",
     description: [
-      "Collaborated with other interns to design and develop the company website with 50+ responsive UI pages and 20+ custom animations.",
+      "Collaborated with other interns to design and develop the company website with 50+ UI pages and 20+ custom animations.",
       "Integrated backend APIs to build dynamic blog and news pages, and developed an admin panel for real-time content management.",
-      "Integrated an AI chat bot for instant answers and 24/7 support, improving engagement by 23%. Built using the MERN stack.",
+      "Integrated an AI chat bot to instantly answer visitor questions about the company's products and services, offering 24/7 support and improving engagement. Built using the MERN stack.",
     ],
     skills: [
       SkillNames.TS,
@@ -301,8 +301,8 @@ export const EXPERIENCE: Experience[] = [
     company: "Wisconsin School of Business",
     logo: "/assets/logos/wisconsin.png",
     description: [
-      "Prepared and graded lecture materials, assignments, projects and exams while clarifying concepts during office hours for 60+ students.",
-      "Led weekly discussion sections on end-to-end ML model development, including data cleaning, model selection, feature transformations, hyperparameter tuning, model training and performance evaluations through real life case studies.",
+      "Prepared and graded lecture materials, assignments, projects and exams for 60+ students in INFO SYS 423 under Professor Qinglai He. Held weekly office hours.",
+      "Led discussion sections introducing the end-to-end ML cycle — dataset cleaning, feature selection, model selection, hyperparameter tuning, and evaluation — through real life case studies, and filled in for delivering lectures.",
     ],
     skills: [
       SkillNames.PYTHON,
@@ -320,9 +320,9 @@ export const EXPERIENCE: Experience[] = [
     company: "Reliance Jio",
     logo: "/assets/logos/jio.png",
     description: [
-      "Deployed a decision tree regression model to predict battery backup duration during power loss for data centers statewide with 91% accuracy.",
-      "Processed daily updated operations data and applied data cleaning, grid search CV, VIF analysis and pruning to reduce model complexity.",
-      "Presented improved maintenance scheduling and preventive measures for high risk sites to stakeholders, reducing system downtime by 15%.",
+      "Deployed a random forest regression model to predict available battery backup runtime for data centers statewide, helping operations teams anticipate how long a site could stay powered through a grid outage. Achieved an average prediction error of 12 minutes.",
+      "Processed daily updated operations data, using VIF analysis to remove multicollinear features and pruning to prevent overfitting on the constantly refreshed dataset, tuned via grid search CV.",
+      "Presented an improved, proactive maintenance schedule to stakeholders for sites flagged with low predicted battery backup runtime, replacing reactive fixes and reducing system downtime by 15%.",
     ],
     skills: [
       SkillNames.PYTHON,
