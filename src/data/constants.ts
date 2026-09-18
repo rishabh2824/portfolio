@@ -243,6 +243,21 @@ export type Experience = {
 // EXPERIENCE_SKILLS above.
 export const EXPERIENCE: Experience[] = [
   {
+    id: 6,
+    startDate: "Sep 2026",
+    endDate: "Present",
+    title: "Teaching Assistant",
+    company: "College of Computing and AI",
+    logo: "/assets/logos/wisconsin.png",
+    description: [
+      "Co-managed capstone course operations for 110+ students and 10+ enterprise partners, ensuring project delivery.",
+      "Coached development teams on Agile/Scrum principles while enforcing clean Git workflows, branching strategies, and code review standards.",
+      "Conducted office hours to assist students with architecture design, code debugging, and scope management.",
+      "Evaluated production codebases, weekly demos, architecture specs, and final partner deliverables.",
+    ],
+    skills: [SkillNames.GIT, SkillNames.GITHUB],
+  },
+  {
     id: 1,
     startDate: "Sep 2025",
     endDate: "Present",
